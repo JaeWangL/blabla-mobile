@@ -6,7 +6,7 @@ import { styles } from './styles';
 function ArchivesScreen(): JSX.Element {
   return (
     <View style={styles.wrapper}>
-      <Text>Home!</Text>
+      <Text>Archives</Text>
     </View>
   );
 }

@@ -1,14 +1,21 @@
-import { StatusBar } from "expo-status-bar"
+import AppLoading from 'expo-app-loading';
+import { StatusBar } from 'expo-status-bar';
+import React from 'react';
 import { AppearanceProvider } from 'react-native-appearance';
-import { MainNavigation } from './navigation/main_navigation';
+import { RecoilRoot } from 'recoil';
+import { RootNavigator } from './navigation/root_navigator';
 
-export function main() {
-    return (
+export function Main(): JSX.Element {
+  return (
+    <RecoilRoot>
       <AppearanceProvider>
         <StatusBar style="auto" />
-        <MainNavigation />
+        <React.Suspense fallback={<AppLoading />}>
+          <RootNavigator />
+        </React.Suspense>
       </AppearanceProvider>
-    )
-  }
+    </RecoilRoot>
+  );
+}
 
-export default main;
+export default Main;

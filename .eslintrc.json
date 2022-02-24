@@ -49,6 +49,7 @@
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off",
     "react/style-prop-object": "off",
+    "react-hooks/exhaustive-deps": "off",
     "@typescript-eslint/ban-ts-ignore": "off"
   }
 }
