@@ -1,4 +1,5 @@
 node_modules/
+babel.config.js
 .expo/
 dist/
 npm-debug.*
