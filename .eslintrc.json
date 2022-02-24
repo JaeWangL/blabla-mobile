@@ -48,6 +48,7 @@
     }],
     "react/prop-types": "off",
     "react/react-in-jsx-scope": "off",
+    "react/style-prop-object": "off",
     "@typescript-eslint/ban-ts-ignore": "off"
   }
 }
