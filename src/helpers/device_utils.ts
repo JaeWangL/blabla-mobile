@@ -1,4 +1,4 @@
-import * as Device from 'expo-device';
+import * as Application from 'expo-application';
 import { Platform } from 'react-native';
 
 export interface DeviceInfo {
@@ -10,9 +10,19 @@ export interface DeviceInfo {
   deviceId: string;
 }
 
-export function getDeviceInfo(): DeviceInfo {
+export async function getDeviceInfo(): Promise<DeviceInfo | undefined> {
+  let deviceId: string | null;
+  if (Platform.OS === 'android') {
+    deviceId = Application.androidId;
+  } else {
+    deviceId = await Application.getIosIdForVendorAsync();
+  }
+  if (!deviceId) {
+    return undefined;
+  }
+
   return {
     deviceType: Platform.OS === 'android' ? 1 : 2,
-    deviceId: Platform.OS === 'android' ? Device.productName : Device.modelId,
+    deviceId,
   };
 }
