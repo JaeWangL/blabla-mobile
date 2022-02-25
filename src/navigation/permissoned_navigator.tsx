@@ -1,11 +1,12 @@
 import * as Location from 'expo-location';
 import { useCallback, useEffect } from 'react';
-import { AppState, Platform } from 'react-native';
+import { AppState } from 'react-native';
 import { useSetRecoilState } from 'recoil';
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { PermissionedParamsList, ScreenTypes } from '@/configs/screen_types';
 import { LocationSocketTypes } from '@/configs/socket_keys';
+import { getDeviceInfo } from '@/helpers/device_utils';
 import { useLocationSocket } from '@/hooks/use_location_socket';
 import { locationAtom } from '@/recoils/location_states';
 import ArchivesScreen from '@/screens/archives';
@@ -30,15 +31,15 @@ export function PermissionedNavigator(): JSX.Element {
         setLocation({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
         if (locationSocket) {
           locationSocket.emit(LocationSocketTypes.UPDATE_LOCATION, {
-            deviceType: Platform.OS === 'android' ? 1 : 2,
-            deviceId: 'test',
+            deviceType: getDeviceInfo().deviceType,
+            deviceId: getDeviceInfo().deviceId,
             latitude: loc.coords.latitude,
             longitude: loc.coords.longitude,
           });
         }
       },
     );
-  }, [locationSocket]);
+  }, []);
 
   const onAppStateChange = useCallback(
     (nextAppState: 'active' | 'background' | 'inactive' | 'unknown' | 'extension'): void => {
@@ -46,15 +47,15 @@ export function PermissionedNavigator(): JSX.Element {
         locationSocket?.close();
       }
     },
-    [locationSocket],
+    [],
   );
 
-  useEffect((): void => {
+  useEffect(() => {
     initAsync();
 
     AppState.addEventListener('change', onAppStateChange);
 
-    return (): void => {
+    return () => {
       AppState.removeEventListener('change', onAppStateChange);
     };
   }, []);
