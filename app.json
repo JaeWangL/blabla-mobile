@@ -18,15 +18,28 @@
     ],
     "userInterfaceStyle": "automatic",
     "ios": {
+      "bundleIdentifier": "com.hahahoho.blabla",
+      "buildNumber": "1.0.0",
       "supportsTablet": true,
-      "userInterfaceStyle": "light"
+      "userInterfaceStyle": "light",
+      "infoPlist": {
+        "UIBackgroundModes": ["location", "fetch"],
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app uses the location to track your location.",
+        "NSLocationAlwaysUsageDescription": "This app uses the location to track your location.",
+        "NSLocationWhenInUseUsageDescription": "This app uses the location to track your location."
+      }
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "userInterfaceStyle": "dark"
+      "userInterfaceStyle": "dark",
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "ACCESS_BACKGROUND_LOCATION"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
