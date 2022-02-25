@@ -1,5 +1,6 @@
 import { atom } from 'recoil';
 
+// ## -------- LocationStates -------- ##
 export interface LocationStates {
   latitude: number;
   longitude: number;
