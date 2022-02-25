@@ -19,6 +19,21 @@ export function PermissionedNavigator(): JSX.Element {
   const setLocation = useSetRecoilState(locationAtom);
   const locationSocket = useLocationSocket();
 
+  const onLocationChnaged = useCallback(async (loc: Location.LocationObject): Promise<void> => {
+    const deviceInfo = await getDeviceInfo();
+    if (!deviceInfo) {
+      return;
+    }
+
+    setLocation({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
+    locationSocket?.emit(LocationSocketTypes.UPDATE_LOCATION, {
+      deviceType: deviceInfo.deviceType,
+      deviceId: deviceInfo.deviceId,
+      latitude: loc.coords.latitude,
+      longitude: loc.coords.longitude,
+    });
+  }, []);
+
   const initAsync = useCallback(async (): Promise<void> => {
     // TODO: Change to `startLocationUpdatesAsync` for background tasks
     // with `expo-task-manager`
@@ -28,15 +43,7 @@ export function PermissionedNavigator(): JSX.Element {
         timeInterval: 2000,
       },
       (loc) => {
-        setLocation({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
-        if (locationSocket) {
-          locationSocket.emit(LocationSocketTypes.UPDATE_LOCATION, {
-            deviceType: getDeviceInfo().deviceType,
-            deviceId: getDeviceInfo().deviceId,
-            latitude: loc.coords.latitude,
-            longitude: loc.coords.longitude,
-          });
-        }
+        onLocationChnaged(loc);
       },
     );
   }, []);
