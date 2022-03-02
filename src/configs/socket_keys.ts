@@ -2,9 +2,6 @@ export enum LocationSocketDestination {
   // Send
   UPDATE_LOCATION = '/app/location/update',
 
-  // Receive
+  // Receive Notifications
+  CREATED_NEW_POST = '/user/queue/post/new',
 }
-
-export type LocationSocketParamsList = {
-  [LocationSocketDestination.UPDATE_LOCATION]: undefined;
-};
