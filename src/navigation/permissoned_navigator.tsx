@@ -19,25 +19,28 @@ export function PermissionedNavigator(): JSX.Element {
   const setLocation = useSetRecoilState(locationAtom);
   const locationSocket = useLocationSocket();
 
-  const onLocationChnaged = useCallback(async (loc: Location.LocationObject): Promise<void> => {
-    const deviceInfo = await getDeviceInfo();
-    if (!deviceInfo) {
-      return;
-    }
+  const onLocationChnaged = useCallback(
+    async (loc: Location.LocationObject): Promise<void> => {
+      const deviceInfo = await getDeviceInfo();
+      if (!deviceInfo) {
+        return;
+      }
 
-    setLocation({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
-    if (locationSocket?.connected) {
-      locationSocket?.publish({
-        destination: LocationSocketDestination.UPDATE_LOCATION,
-        body: JSON.stringify({
-          deviceType: deviceInfo.deviceType,
-          deviceId: deviceInfo.deviceId,
-          latitude: loc.coords.latitude,
-          longitude: loc.coords.longitude,
-        }),
-      });
-    }
-  }, []);
+      setLocation({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
+      if (locationSocket?.connected) {
+        locationSocket?.publish({
+          destination: LocationSocketDestination.UPDATE_LOCATION,
+          body: JSON.stringify({
+            deviceType: deviceInfo.deviceType,
+            deviceId: deviceInfo.deviceId,
+            latitude: loc.coords.latitude,
+            longitude: loc.coords.longitude,
+          }),
+        });
+      }
+    },
+    [locationSocket],
+  );
 
   const initAsync = useCallback(async (): Promise<void> => {
     // TODO: Change to `startLocationUpdatesAsync` for background tasks
@@ -51,7 +54,13 @@ export function PermissionedNavigator(): JSX.Element {
         onLocationChnaged(loc);
       },
     );
-  }, []);
+
+    if (locationSocket?.connected) {
+      locationSocket?.subscribe(LocationSocketDestination.CREATED_NEW_POST, (message) => {
+        console.log(JSON.parse(message.body));
+      });
+    }
+  }, [locationSocket]);
 
   const onAppStateChange = useCallback(
     (nextAppState: 'active' | 'background' | 'inactive' | 'unknown' | 'extension'): void => {
@@ -59,7 +68,7 @@ export function PermissionedNavigator(): JSX.Element {
         locationSocket?.deactivate();
       }
     },
-    [],
+    [locationSocket],
   );
 
   useEffect(() => {
