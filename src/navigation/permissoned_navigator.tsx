@@ -5,7 +5,7 @@ import { useSetRecoilState } from 'recoil';
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { PermissionedParamsList, ScreenTypes } from '@/configs/screen_types';
-import { LocationSocketTypes } from '@/configs/socket_keys';
+import { LocationSocketDestination } from '@/configs/socket_keys';
 import { getDeviceInfo } from '@/helpers/device_utils';
 import { useLocationSocket } from '@/hooks/use_location_socket';
 import { locationAtom } from '@/recoils/location_states';
@@ -26,12 +26,17 @@ export function PermissionedNavigator(): JSX.Element {
     }
 
     setLocation({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
-    locationSocket?.emit(LocationSocketTypes.UPDATE_LOCATION, {
-      deviceType: deviceInfo.deviceType,
-      deviceId: deviceInfo.deviceId,
-      latitude: loc.coords.latitude,
-      longitude: loc.coords.longitude,
-    });
+    if (locationSocket?.connected) {
+      locationSocket?.publish({
+        destination: LocationSocketDestination.UPDATE_LOCATION,
+        body: JSON.stringify({
+          deviceType: deviceInfo.deviceType,
+          deviceId: deviceInfo.deviceId,
+          latitude: loc.coords.latitude,
+          longitude: loc.coords.longitude,
+        }),
+      });
+    }
   }, []);
 
   const initAsync = useCallback(async (): Promise<void> => {
@@ -51,7 +56,7 @@ export function PermissionedNavigator(): JSX.Element {
   const onAppStateChange = useCallback(
     (nextAppState: 'active' | 'background' | 'inactive' | 'unknown' | 'extension'): void => {
       if (nextAppState !== 'active') {
-        locationSocket?.close();
+        locationSocket?.deactivate();
       }
     },
     [],

@@ -1,10 +1,10 @@
-export enum LocationSocketTypes {
+export enum LocationSocketDestination {
   // Send
-  UPDATE_LOCATION = 'updateLocation',
+  UPDATE_LOCATION = '/app/location/update',
 
   // Receive
 }
 
 export type LocationSocketParamsList = {
-  [LocationSocketTypes.UPDATE_LOCATION]: undefined;
+  [LocationSocketDestination.UPDATE_LOCATION]: undefined;
 };
