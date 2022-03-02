@@ -17,6 +17,8 @@ export interface CreatePostRequest {
 
 export interface PostPreviewDTO {
   id: string;
+  latitude: number;
+  longitude: number;
   title: string;
   contentsSnippet: string;
   thumbnailUrl?: string;

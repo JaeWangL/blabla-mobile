@@ -1,9 +1,8 @@
-import { StyleSheet } from 'react-native';
+import { Dimensions, StyleSheet } from 'react-native';
 
 export const styles = StyleSheet.create({
-  wrapper: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+  mapWrapper: {
+    width: Dimensions.get('window').width,
+    height: Dimensions.get('window').height,
   },
 });
