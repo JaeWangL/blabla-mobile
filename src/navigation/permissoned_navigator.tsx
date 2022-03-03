@@ -1,6 +1,7 @@
 import * as Location from 'expo-location';
 import { useCallback, useEffect } from 'react';
 import { AppState } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { useSetRecoilState } from 'recoil';
 import { Ionicons } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -9,9 +10,9 @@ import { LocationSocketDestination } from '@/configs/socket_keys';
 import { getDeviceInfo } from '@/helpers/device_utils';
 import { useLocationSocket } from '@/hooks/use_location_socket';
 import { locationAtom } from '@/recoils/location_states';
-import ArchivesScreen from '@/screens/archives';
-import HomeScreen from '@/screens/home';
 import SettingsScreen from '@/screens/settings';
+import { ArchivesNavigator } from './tabs/archives_navigator';
+import { HomeNavigator } from './tabs/home_navigator';
 
 const Tab = createBottomTabNavigator<PermissionedParamsList>();
 
@@ -56,8 +57,12 @@ export function PermissionedNavigator(): JSX.Element {
     );
 
     if (locationSocket?.connected) {
-      locationSocket?.subscribe(LocationSocketDestination.CREATED_NEW_POST, (message) => {
-        console.log(JSON.parse(message.body));
+      locationSocket?.subscribe(LocationSocketDestination.CREATED_NEW_POST, ({ body }: { body: string }) => {
+        Toast.show({
+          type: 'success',
+          text1: 'New post alert',
+          text2: body,
+        });
       });
     }
   }, [locationSocket]);
@@ -86,10 +91,10 @@ export function PermissionedNavigator(): JSX.Element {
   }, []);
 
   return (
-    <Tab.Navigator initialRouteName={ScreenTypes.HOME}>
+    <Tab.Navigator initialRouteName={ScreenTypes.STACK_HOME} screenOptions={{ headerShown: false }}>
       <Tab.Screen
-        name={ScreenTypes.ARCHIVES}
-        component={ArchivesScreen}
+        name={ScreenTypes.STACK_ARCHIVES}
+        component={ArchivesNavigator}
         options={{
           tabBarActiveTintColor: '#00B386',
           tabBarInactiveTintColor: '#404040',
@@ -97,8 +102,8 @@ export function PermissionedNavigator(): JSX.Element {
         }}
       />
       <Tab.Screen
-        name={ScreenTypes.HOME}
-        component={HomeScreen}
+        name={ScreenTypes.STACK_HOME}
+        component={HomeNavigator}
         options={{
           tabBarActiveTintColor: '#00B386',
           tabBarInactiveTintColor: '#404040',

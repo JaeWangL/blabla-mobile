@@ -4,3 +4,7 @@ export interface UpdateLocationRequest {
   latitude: number;
   longitude: number;
 }
+
+export interface NewPostCreatedMessage {
+  title: string;
+}

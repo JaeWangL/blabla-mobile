@@ -1,3 +1,4 @@
+import Toast from 'react-native-toast-message';
 import { enableScreens } from 'react-native-screens';
 import { useRecoilValue } from 'recoil';
 import { NavigationContainer } from '@react-navigation/native';
@@ -31,6 +32,7 @@ export function RootNavigator(): JSX.Element {
           />
         )}
       </RootStack.Navigator>
+      <Toast />
     </NavigationContainer>
   );
 }
