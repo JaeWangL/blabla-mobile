@@ -8,7 +8,7 @@ const Main = createStackNavigator<HomeParamsList>();
 
 export function HomeNavigator(): JSX.Element {
   return (
-    <Main.Navigator>
+    <Main.Navigator screenOptions={{ headerShown: false }}>
       <Main.Screen name={ScreenTypes.HOME} component={HomeScreen} />
       <Main.Screen name={ScreenTypes.HOME_POST_DETAIL} component={PostDetailScreen} />
       <Main.Screen name={ScreenTypes.HOME_POST_WRITE} component={PostWriteScreen} />

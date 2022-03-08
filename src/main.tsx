@@ -1,6 +1,9 @@
 import AppLoading from 'expo-app-loading';
+import { useAssets } from 'expo-asset';
+import { useFonts } from 'expo-font';
+import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import { useEffect, Suspense } from 'react';
 import { AppearanceProvider } from 'react-native-appearance';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { RecoilRoot } from 'recoil';
@@ -8,15 +11,37 @@ import { RootNavigator } from './navigation/root_navigator';
 
 const queryClient = new QueryClient();
 
-export function Main(): JSX.Element {
+SplashScreen.preventAutoHideAsync();
+
+function App(): JSX.Element {
+  const [fontsLoaded] = useFonts({
+    /* eslint-disable global-require */
+    PretendardBold: require('../assets/fonts/Pretendard-Bold.ttf'),
+    PretendardExtraBold: require('../assets/fonts/Pretendard-ExtraBold.ttf'),
+    PretendardRegular: require('../assets/fonts/Pretendard-Regular.ttf'),
+    /* eslint-enable */
+  });
+
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
+  return (
+    <Suspense fallback={<AppLoading />}>
+      <RootNavigator />
+    </Suspense>
+  );
+}
+
+function Main(): JSX.Element {
   return (
     <QueryClientProvider client={queryClient}>
       <RecoilRoot>
         <AppearanceProvider>
           <StatusBar style="auto" />
-          <React.Suspense fallback={<AppLoading />}>
-            <RootNavigator />
-          </React.Suspense>
+          <App />
         </AppearanceProvider>
       </RecoilRoot>
     </QueryClientProvider>
