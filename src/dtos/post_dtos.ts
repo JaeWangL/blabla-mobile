@@ -1,5 +1,5 @@
 export interface CreatePostRequest {
-  eviceType: 1 | 2;
+  deviceType: 1 | 2;
   deviceId: string;
   latitude: number;
   longitude: number;
@@ -15,6 +15,23 @@ export interface CreatePostRequest {
   originalFileName?: string;
 }
 
+export interface PostCreatedDTO {
+  id: string;
+  deviceType: 1 | 2;
+  deviceId: string;
+}
+
+export interface PostDetailDTO {
+  id: string;
+  latitude: number;
+  longitude: number;
+  title: string;
+  contents: string;
+  thumbnailUrl?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface PostPreviewDTO {
   id: string;
   latitude: number;
@@ -22,4 +39,6 @@ export interface PostPreviewDTO {
   title: string;
   contentsSnippet: string;
   thumbnailUrl?: string;
+  createdAt: Date;
+  updatedAt: Date;
 }

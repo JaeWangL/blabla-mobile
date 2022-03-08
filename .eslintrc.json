@@ -51,6 +51,8 @@
     "react/style-prop-object": "off",
     "react-hooks/exhaustive-deps": "off",
     "@typescript-eslint/ban-ts-comment": "off",
-    "@typescript-eslint/ban-ts-ignore": "off"
+    "@typescript-eslint/ban-ts-ignore": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
+    "@typescript-eslint/return-await": "off"
   }
 }
