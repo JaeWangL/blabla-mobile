@@ -6,6 +6,7 @@ import { useRecoilValue } from 'recoil';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation, CompositeNavigationProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import CustomHeader from '@/components/customHeader';
 import FloatingButton from '@/components/floatingButton';
 import { ArchivesParamsList, PermissionedParamsList, ScreenTypes } from '@/configs/screen_types';
 import { queryKeys } from '@/configs/api_keys';
@@ -50,6 +51,7 @@ function ArchivesScreen(): JSX.Element {
   }
   return (
     <SafeAreaView style={styles.wrapper}>
+      <CustomHeader title="Archives" />
       <FlatList data={postsData} renderItem={renderItem} keyExtractor={(item) => item.id} />
       <FloatingButton onPress={onFABPress} />
     </SafeAreaView>

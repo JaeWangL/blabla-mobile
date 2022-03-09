@@ -4,6 +4,7 @@ import { Image, Text, TouchableOpacity, View } from 'react-native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation, CompositeNavigationProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import IcChat from '@assets/icons/ic_chat.svg';
 import { ArchivesParamsList, PermissionedParamsList, ScreenTypes } from '@/configs/screen_types';
 import { PostPreviewDTO } from '@/dtos/post_dtos';
 import { styles } from './styles';
@@ -29,7 +30,7 @@ function ArchiveItem(props: ArchiveItemProps): JSX.Element {
   return (
     <TouchableOpacity onPress={onPress}>
       <View style={styles.wrapper}>
-        <View style={styles.imageContainer}>
+        <View style={styles.container}>
           <Image
             source={{
               uri: item.thumbnailUrl,
@@ -37,15 +38,24 @@ function ArchiveItem(props: ArchiveItemProps): JSX.Element {
             style={styles.thumbnailImage}
             resizeMode="cover"
           />
-          <Text style={styles.thumbnailAddress}>부산진구</Text>
-        </View>
-        <View style={styles.contentsContainer}>
-          <Text numberOfLines={1} style={styles.title}>
-            {item.title}
-          </Text>
-          <Text numberOfLines={1} style={styles.contents}>
-            {item.contentsSnippet}
-          </Text>
+          <View style={styles.contentsContainer}>
+            <Text numberOfLines={1} style={styles.title}>
+              {item.title}
+            </Text>
+            <Text numberOfLines={1} style={styles.contents}>
+              {item.contentsSnippet}
+            </Text>
+            <View style={styles.captionContainer}>
+              <View style={styles.captionContentContainer}>
+                <Text style={styles.distance}>15M</Text>
+                <Text style={styles.createdTime}> · 1시간 전 </Text>
+              </View>
+              <View style={styles.captionContentContainer}>
+                <IcChat width={16} height={16} />
+                <Text style={styles.createdTime}>3</Text>
+              </View>
+            </View>
+          </View>
         </View>
       </View>
     </TouchableOpacity>
