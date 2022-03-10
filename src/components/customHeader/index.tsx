@@ -1,6 +1,6 @@
 import { memo } from 'react';
 import IsEqual from 'react-fast-compare';
-import { Text } from 'react-native';
+import { Text } from 'react-native-ui-lib';
 import { styles } from './styles';
 
 type CustomHeaderProps = {
