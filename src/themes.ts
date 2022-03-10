@@ -18,6 +18,7 @@ export const defaultTheme = {
   backgroundDefault: '#F9F9F9',
   titleDefault: colors.black,
   descDefault: colors.gray500,
+  descDark: colors.gray900,
   captionDefault: colors.gray600,
   disabled: colors.gray500,
 };

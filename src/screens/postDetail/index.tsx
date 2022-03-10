@@ -1,11 +1,12 @@
 import { memo, useCallback } from 'react';
 import IsEqual from 'react-fast-compare';
-import { ActivityIndicator, ScrollView, Text, View } from 'react-native';
-import { AnimatedImage, Button } from 'react-native-ui-lib';
+import { ActivityIndicator, ScrollView } from 'react-native';
+import { Avatar, AnimatedImage, Button, Text, View } from 'react-native-ui-lib';
 import { useQuery } from 'react-query';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation, useRoute, CompositeNavigationProp, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import IcChat from '@assets/icons/ic_chat.svg';
 import { queryKeys } from '@/configs/api_keys';
 import { ArchivesParamsList, PermissionedParamsList, ScreenTypes } from '@/configs/screen_types';
 import { getPostById } from '@/services/posts_service';
@@ -47,13 +48,47 @@ function PostDetailScreen(): JSX.Element {
     );
   }
   return (
-    <ScrollView>
-      <AnimatedImage style={styles.thumbnail} source={{ uri: postData.thumbnailUrl }} loader={<ActivityIndicator />} />
-      <Button label="Go To Chat" onPress={onGoToChatPress} />
-      {postData.thumbnailUrl ? <Text>{postData.thumbnailUrl}</Text> : null}
-      <Text>{postData.title}</Text>
-      <Text>{postData.contents}</Text>
-    </ScrollView>
+    <View style={styles.wrapper}>
+      <ScrollView>
+        <AnimatedImage
+          style={styles.thumbnail}
+          source={{ uri: postData.thumbnailUrl }}
+          loader={<ActivityIndicator />}
+        />
+        <View style={styles.avatarContainer}>
+          <View style={styles.profileContainer}>
+            <Avatar
+              source={{
+                uri: 'https://lh3.googleusercontent.com/-cw77lUnOvmI/AAAAAAAAAAI/AAAAAAAAAAA/WMNck32dKbc/s181-c/104220521160525129167.jpg',
+              }}
+            />
+            <Text style={styles.avatarName}>테스트 닉네임</Text>
+          </View>
+          <View style={styles.captionContainer}>
+            <Text style={styles.distance}>15M</Text>
+            <Text style={styles.createdTime}> · 1시간 전 </Text>
+          </View>
+        </View>
+        <View style={styles.divider} />
+        <View style={styles.contentContainer}>
+          <Text style={styles.title}>{postData.title}</Text>
+          <Text style={styles.contents}>{postData.contents}</Text>
+        </View>
+      </ScrollView>
+      <View style={styles.gotoChatContainer}>
+        <View style={styles.chatDescContainer}>
+          <IcChat width={16} height={16} />
+          <Text style={styles.createdTime}>현재 32명이 채팅방에 참여 중입니다.</Text>
+        </View>
+        <Button
+          avoidInnerPadding
+          style={styles.chatButton}
+          labelStyle={styles.chatButtonLabel}
+          label="채팅 참여하기"
+          onPress={onGoToChatPress}
+        />
+      </View>
+    </View>
   );
 }
 
