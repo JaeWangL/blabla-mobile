@@ -1,10 +1,10 @@
-export enum ChatSocketDestination {
-  // Send
+export enum ChatPubDestination {
   JOIN_ROOM = 'joinRoom',
   LEAVE_ROOM = 'leaveRoom',
   SEND_MESSAGE = 'sendMessage',
+}
 
-  // Receive Notifications
+export enum ChatSubDestination {
   GET_PROFILE = 'getProfile',
   JOIN_NEW_MEMBER = 'joinedNewMember',
   LEAVED_EXISTING_MEMBER = 'leavedExistingMember',

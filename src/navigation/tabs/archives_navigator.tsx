@@ -1,6 +1,7 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import { ScreenTypes, ArchivesParamsList } from '@/configs/screen_types';
 import ArchivesScreen from '@/screens/archives';
+import PostChatScreen from '@/screens/postChat';
 import PostDetailScreen from '@/screens/postDetail';
 import PostWriteScreen from '@/screens/postWrite';
 
@@ -16,6 +17,7 @@ export function ArchivesNavigator(): JSX.Element {
         options={{ headerShown: true }}
       />
       <Main.Screen name={ScreenTypes.ARCHIVES_POST_WRITE} component={PostWriteScreen} />
+      <Main.Screen name={ScreenTypes.ARCHIVES_POST_CHAT} component={PostChatScreen} />
     </Main.Navigator>
   );
 }
