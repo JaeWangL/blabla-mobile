@@ -29,12 +29,10 @@ export function useChatSocket(props: ChatSocketProps): Socket | null {
     } as JoinRoomRequest);
 
     socket.on(ChatSubDestination.GET_PROFILE, (nickName: string) => {
-      console.log(nickName);
       subGetProfile(nickName);
     });
 
     socket.on(ChatSubDestination.NEW_MESSAGE, (message: SentMessage) => {
-      console.log('Work');
       subNewMessage(message);
     });
   };
@@ -45,13 +43,21 @@ export function useChatSocket(props: ChatSocketProps): Socket | null {
       return;
     }
 
-    socketRef.current?.emit(ChatPubDestination.LEAVE_ROOM, {
-      roomId,
-      deviceType: deviceInfo.deviceType,
-      deviceId: deviceInfo.deviceId,
-    } as LeaveRoomRequest);
-    if (handleDisconnect) {
-      handleDisconnect();
+    try {
+      socketRef.current?.emit(ChatPubDestination.LEAVE_ROOM, {
+        roomId,
+        deviceType: deviceInfo.deviceType,
+        deviceId: deviceInfo.deviceId,
+      } as LeaveRoomRequest);
+
+      if (handleDisconnect) {
+        handleDisconnect();
+      }
+
+      socketRef.current?.off(ChatSubDestination.GET_PROFILE);
+      socketRef.current?.off(ChatSubDestination.NEW_MESSAGE);
+    } finally {
+      socketRef.current?.disconnect();
     }
   };
 

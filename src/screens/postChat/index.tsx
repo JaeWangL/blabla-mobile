@@ -8,6 +8,7 @@ import { ArchivesParamsList, ScreenTypes } from '@/configs/screen_types';
 import { ChatPubDestination } from '@/configs/socket_keys';
 import { SendMessageRequest } from '@/dtos/chat_dtos';
 import { useChatSocket } from '@/hooks/use_chat_socket';
+import ChatBalloon from './chatBalloon';
 import { MessageState } from './interfaces';
 import { styles } from './styles';
 
@@ -29,8 +30,9 @@ function PostChatScreen(): JSX.Element {
   const chatSocket = useChatSocket({
     roomId: route.params.post.id,
     subGetProfile: setUserNickName,
-    subNewMessage: (message) =>
-      setMessages((prev) => [...prev, { nickName: message.nickName, message: message.message } as MessageState]),
+    subNewMessage: (message) => {
+      setMessages((prev) => [...prev, { nickName: message.nickName, message: message.message } as MessageState]);
+    },
     handleDisconnect: handleSocketDisconnect,
   });
 
@@ -47,8 +49,11 @@ function PostChatScreen(): JSX.Element {
     setText('');
   }, [text]);
 
-  const renderMessages = (info: ListRenderItemInfo<MessageState>): JSX.Element => (
-    <Text key={DayJS().valueOf()}>{info.item.message}</Text>
+  const renderMessages = useCallback(
+    (info: ListRenderItemInfo<MessageState>): JSX.Element => {
+      return <ChatBalloon isReceived={info.item.nickName !== userNickName} message={info.item.message} />;
+    },
+    [userNickName],
   );
 
   if (!userNickName) {

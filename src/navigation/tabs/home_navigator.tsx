@@ -12,8 +12,8 @@ export function HomeNavigator(): JSX.Element {
     <Main.Navigator screenOptions={{ headerShown: false }}>
       <Main.Screen name={ScreenTypes.HOME} component={HomeScreen} />
       <Main.Screen name={ScreenTypes.HOME_POST_DETAIL} component={PostDetailScreen} options={{ headerShown: true }} />
-      <Main.Screen name={ScreenTypes.HOME_POST_WRITE} component={PostWriteScreen} />
-      <Main.Screen name={ScreenTypes.HOME_POST_CHAT} component={PostChatScreen} />
+      <Main.Screen name={ScreenTypes.HOME_POST_WRITE} component={PostWriteScreen} options={{ headerShown: true }} />
+      <Main.Screen name={ScreenTypes.HOME_POST_CHAT} component={PostChatScreen} options={{ headerShown: true }} />
     </Main.Navigator>
   );
 }
