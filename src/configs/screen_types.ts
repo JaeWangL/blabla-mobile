@@ -12,11 +12,13 @@ export enum ScreenTypes {
   ARCHIVES = 'Archives',
   ARCHIVES_POST_DETAIL = 'ArchivesPostDetail',
   ARCHIVES_POST_WRITE = 'ArchivesPostWrite',
+  ARCHIVES_POST_CHAT = 'ArchivesPostChat',
 
   STACK_HOME = 'StackHome',
   HOME = 'Home',
   HOME_POST_DETAIL = 'HomePostDetail',
   HOME_POST_WRITE = 'HomePostWrite',
+  HOME_POST_CHAT = 'HomePostChat',
 
   SETTINGS = 'Settings',
 }
@@ -35,12 +37,14 @@ export type ArchivesParamsList = {
   [ScreenTypes.ARCHIVES]: undefined;
   [ScreenTypes.ARCHIVES_POST_DETAIL]: { post: PostPreviewDTO };
   [ScreenTypes.ARCHIVES_POST_WRITE]: undefined;
+  [ScreenTypes.ARCHIVES_POST_CHAT]: { post: PostPreviewDTO };
 };
 
 export type HomeParamsList = {
   [ScreenTypes.HOME]: undefined;
   [ScreenTypes.HOME_POST_DETAIL]: { post: PostPreviewDTO };
   [ScreenTypes.HOME_POST_WRITE]: undefined;
+  [ScreenTypes.HOME_POST_CHAT]: { post: PostPreviewDTO };
 };
 
 export type RootStackParamList = {
