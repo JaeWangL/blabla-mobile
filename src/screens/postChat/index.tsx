@@ -1,12 +1,13 @@
 import DayJS from 'dayjs';
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useRef, useState } from 'react';
 import IsEqual from 'react-fast-compare';
-import { KeyboardAvoidingView, FlatList, ListRenderItemInfo, Text, View } from 'react-native';
-import { Button, Incubator } from 'react-native-ui-lib';
+import { FlatList, ListRenderItemInfo } from 'react-native';
+import { Button, Incubator, Text, View } from 'react-native-ui-lib';
 import { useRoute, RouteProp } from '@react-navigation/native';
+import KeyboardAwareScrollView from '@/components/keyboardAwareScrollView';
 import { ArchivesParamsList, ScreenTypes } from '@/configs/screen_types';
 import { ChatPubDestination } from '@/configs/socket_keys';
-import { SendMessageRequest } from '@/dtos/chat_dtos';
+import { SendMessageRequest, SentMessage } from '@/dtos/chat_dtos';
 import { useChatSocket } from '@/hooks/use_chat_socket';
 import ChatBalloon from './chatBalloon';
 import { MessageState } from './interfaces';
@@ -18,57 +19,89 @@ type ScreenRouteProps = RouteProp<ArchivesParamsList, ScreenTypes.ARCHIVES_POST_
 
 function PostChatScreen(): JSX.Element {
   const route = useRoute<ScreenRouteProps>();
-  const [userNickName, setUserNickName] = useState<string>('');
+  const messagesRef = useRef<FlatList>(null);
   const [messages, setMessages] = useState<MessageState[]>([]);
   const [text, setText] = useState<string>('');
 
+  const handleSubNewMessage = useCallback((message: SentMessage) => {
+    setMessages((prev) => [...prev, { nickName: message.nickName, message: message.message } as MessageState]);
+  }, []);
+
+  const handleNewMemberJoined = useCallback((nickName: string) => {
+    setMessages((prev) => [...prev, { nickName: '알림', message: `${nickName} 님이 입장하셨습니다.` } as MessageState]);
+  }, []);
+
+  const handleMemberLeaved = useCallback((nickName: string) => {
+    setMessages((prev) => [...prev, { nickName: '알림', message: `${nickName} 님이 퇴장하셨습니다.` } as MessageState]);
+  }, []);
+
   const handleSocketDisconnect = useCallback(() => {
-    setUserNickName('');
     setMessages([]);
   }, []);
 
-  const chatSocket = useChatSocket({
+  const { chatSocket, nickName } = useChatSocket({
     roomId: route.params.post.id,
-    subGetProfile: setUserNickName,
-    subNewMessage: (message) => {
-      setMessages((prev) => [...prev, { nickName: message.nickName, message: message.message } as MessageState]);
-    },
+    subNewMemberJoined: handleNewMemberJoined,
+    subMemberLeaved: handleMemberLeaved,
+    subNewMessage: handleSubNewMessage,
     handleDisconnect: handleSocketDisconnect,
   });
 
   const onSendClick = useCallback((): void => {
-    if (!userNickName || !text) {
+    if (!nickName || !text) {
       return;
     }
 
     chatSocket?.emit(ChatPubDestination.SEND_MESSAGE, {
       roomId: route.params.post.id,
-      nickName: userNickName,
+      nickName,
       message: text,
     } as SendMessageRequest);
     setText('');
-  }, [text]);
+  }, [chatSocket, text]);
+
+  const onMessageListUpdated = useCallback((): void => {
+    messagesRef.current?.scrollToEnd({ animated: true });
+  }, [messagesRef.current]);
 
   const renderMessages = useCallback(
     (info: ListRenderItemInfo<MessageState>): JSX.Element => {
-      return <ChatBalloon isReceived={info.item.nickName !== userNickName} message={info.item.message} />;
+      return <ChatBalloon isReceived={info.item.nickName !== nickName} message={info.item.message} />;
     },
-    [userNickName],
+    [nickName],
   );
 
-  if (!userNickName) {
-    return (
-      <View style={styles.wrapper}>
-        <Text>Loading ...</Text>
-      </View>
-    );
+  if (!chatSocket || !nickName) {
+    return <Text>Loading ...</Text>;
   }
   return (
-    <KeyboardAvoidingView style={styles.wrapper}>
-      <FlatList data={messages} renderItem={renderMessages} />
-      <TextField value={text} onChangeText={setText} placeholder="Type messages ..." />
-      <Button style={styles.buttonSend} label="Send" onPress={onSendClick} />
-    </KeyboardAvoidingView>
+    <KeyboardAwareScrollView>
+      <>
+        <FlatList
+          ref={messagesRef}
+          data={messages}
+          renderItem={renderMessages}
+          onContentSizeChange={onMessageListUpdated}
+          onLayout={onMessageListUpdated}
+        />
+        <TextField
+          containerStyle={styles.inputContainer}
+          value={text}
+          onChangeText={setText}
+          placeholder="메세지를 입력해 주세요 ..."
+          multiline
+          trailingAccessory={
+            <Button
+              style={styles.buttonSend}
+              labelStyle={styles.buttonSendLabel}
+              label="보내기"
+              onPress={onSendClick}
+              avoidInnerPadding
+            />
+          }
+        />
+      </>
+    </KeyboardAwareScrollView>
   );
 }
 

@@ -1,14 +1,19 @@
 import * as ImagePicker from 'expo-image-picker';
 import { memo, useCallback, useEffect, useState } from 'react';
 import IsEqual from 'react-fast-compare';
-import { Alert, Button, Image, Text, TouchableOpacity, View } from 'react-native';
-import { Incubator } from 'react-native-ui-lib';
+import { ActivityIndicator, Alert, Image } from 'react-native';
+import { AnimatedImage, Badge, Incubator, Text, View, TouchableOpacity } from 'react-native-ui-lib';
 import { useRecoilValue } from 'recoil';
+import IcClose from '@assets/icons/ic_close.png';
+import ThumbnailPlaceholder from '@assets/images/thumbnail_placeholder_upload.png';
+import Divider from '@/components/divider';
+import KeyboardAwareScrollView from '@/components/keyboardAwareScrollView';
 import { CreatePostRequest } from '@/dtos/post_dtos';
 import { locationAtom } from '@/recoils/location_states';
 import { createPost } from '@/services/posts_service';
 import { uploadThumbnail } from '@/services/upload_service';
 import { getDeviceInfo } from '@/helpers/device_utils';
+import { defaultTheme } from '@/themes';
 import { styles } from './styles';
 
 const { TextField } = Incubator;
@@ -40,15 +45,14 @@ function PostWrite(): JSX.Element {
       setPercentage(20);
       const uploadResponse = await uploadThumbnail(pickerResult.uri, setPercentage);
       if (uploadResponse) {
-        setPercentage(100);
         setThumbnail(uploadResponse.thumbnailUrl);
       } else {
-        setPercentage(0);
         Alert.alert('Upload Error', 'Maximum file size is exceeded.', [{ text: 'OK' }]);
       }
     } catch (e) {
-      setPercentage(0);
       Alert.alert('Upload Error', 'Error occured when uploading image. Try again later please.', [{ text: 'OK' }]);
+    } finally {
+      setPercentage(0);
     }
   }, []);
 
@@ -101,31 +105,59 @@ function PostWrite(): JSX.Element {
   }, [title, contents, thumbnail]);
 
   return (
-    <View style={styles.wrapper}>
-      <TouchableOpacity onPress={onThumbnailPress}>
-        {thumbnail ? <Image style={styles.thumbnail} source={{ uri: thumbnail }} /> : <Text>Select Herer</Text>}
-      </TouchableOpacity>
-      <TextField
-        placeholder="Title"
-        floatingPlaceholder
-        enableErrors
-        validate={['required']}
-        validationMessage={['Field is required', 'Email is invalid', 'Password is too short']}
-        value={title}
-        onChangeText={setTitle}
-      />
-      <TextField
-        placeholder="Contents"
-        floatingPlaceholder
-        multiline
-        enableErrors
-        validate={['required']}
-        validationMessage={['Field is required']}
-        value={contents}
-        onChangeText={setContents}
-      />
-      <Button title={isLoading ? 'Loading' : 'Write'} onPress={onWritePress} />
-    </View>
+    <KeyboardAwareScrollView useScroll>
+      <View style={styles.wrapper}>
+        <TouchableOpacity onPress={onThumbnailPress}>
+          <View style={styles.thumbnailContainer}>
+            {thumbnail ? (
+              <View>
+                <AnimatedImage style={[styles.thumbnail, styles.withBorderRadius]} source={{ uri: thumbnail }} />
+                <Badge
+                  backgroundColor={defaultTheme.primary}
+                  style={styles.thumbnailRemoveBadge}
+                  icon={IcClose}
+                  iconStyle={styles.thumbnailCloseIcon}
+                  size={20}
+                />
+              </View>
+            ) : (
+              <Image style={styles.thumbnail} source={ThumbnailPlaceholder} />
+            )}
+            {uploadPercentage !== 0 ? <ActivityIndicator style={styles.thumbnailLoader} /> : null}
+          </View>
+        </TouchableOpacity>
+        <Divider />
+        <TextField
+          containerStyle={styles.inputContainer}
+          placeholderTextColor={defaultTheme.descDefault}
+          placeholder="제목을 입력해 주세요."
+          enableErrors
+          validate={['required']}
+          validationMessage={['Field is required', 'Email is invalid', 'Password is too short']}
+          value={title}
+          onChangeText={setTitle}
+        />
+        <Divider />
+        <TextField
+          containerStyle={styles.inputContainer}
+          placeholderTextColor={defaultTheme.descDefault}
+          placeholder="내용을 입력해 주세요."
+          multiline
+          enableErrors
+          validate={['required']}
+          validationMessage={['Field is required']}
+          value={contents}
+          onChangeText={setContents}
+        />
+        <Text style={styles.caption}>
+          {`
+휴대폰의 위치 기반으로 소식이 전해지며,
+게시글은 작성일로부터 24시간 후에 자동으로 삭제됩니다.
+          
+개인정보가 노출되지 않도록 주의 바랍니다.`}
+        </Text>
+      </View>
+    </KeyboardAwareScrollView>
   );
 }
 
