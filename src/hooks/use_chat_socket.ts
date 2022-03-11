@@ -24,6 +24,10 @@ export function useChatSocket(props: ChatSocketProps): ChatSocketType {
   const [nickName, setNickName] = useState<string>('');
 
   const initAsync = async (): Promise<void> => {
+    if (socket) {
+      return;
+    }
+
     const chatSocket = io(apiKeys.chatDomain, {
       reconnectionAttempts: 2,
       transports: ['websocket'],
@@ -68,8 +72,6 @@ export function useChatSocket(props: ChatSocketProps): ChatSocketType {
 
       if (handleDisconnect) {
         handleDisconnect();
-        setNickName('');
-        setSocket(null);
       }
 
       socket.off(ChatSubDestination.GET_PROFILE, setNickName);
@@ -78,6 +80,8 @@ export function useChatSocket(props: ChatSocketProps): ChatSocketType {
       socket.off(ChatSubDestination.NEW_MESSAGE, subNewMessage);
     } finally {
       socket.disconnect();
+      setNickName('');
+      setSocket(null);
     }
   };
 
