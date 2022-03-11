@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { apiKeys } from '../configs/api_keys';
 import { ChatPubDestination, ChatSubDestination } from '../configs/socket_keys';
@@ -7,79 +7,87 @@ import { getDeviceInfo } from '../helpers/device_utils';
 
 type ChatSocketProps = {
   roomId: string;
-  subGetProfile: (nickName: string) => void;
+  subNewMemberJoined: (nickName: string) => void;
+  subMemberLeaved: (nickName: string) => void;
   subNewMessage: (message: SentMessage) => void;
   handleDisconnect?: () => void;
 };
 
-export function useChatSocket(props: ChatSocketProps): Socket | null {
-  const { handleDisconnect, roomId, subGetProfile, subNewMessage } = props;
-  const socketRef = useRef<Socket | null>(null);
+type ChatSocketType = {
+  chatSocket: Socket | null;
+  nickName: string;
+};
 
-  const initAsync = async (socket: Socket): Promise<void> => {
+export function useChatSocket(props: ChatSocketProps): ChatSocketType {
+  const { handleDisconnect, roomId, subMemberLeaved, subNewMemberJoined, subNewMessage } = props;
+  const [socket, setSocket] = useState<Socket | null>(null);
+  const [nickName, setNickName] = useState<string>('');
+
+  const initAsync = async (): Promise<void> => {
+    const chatSocket = io(apiKeys.chatDomain, {
+      reconnectionAttempts: 2,
+      transports: ['websocket'],
+      path: '/ws-chat/',
+      upgrade: false,
+    });
     const deviceInfo = await getDeviceInfo();
     if (!deviceInfo) {
       return;
     }
 
-    socket.emit(ChatPubDestination.JOIN_ROOM, {
+    chatSocket.emit(ChatPubDestination.JOIN_ROOM, {
       roomId,
       deviceType: deviceInfo.deviceType,
       deviceId: deviceInfo.deviceId,
     } as JoinRoomRequest);
 
-    socket.on(ChatSubDestination.GET_PROFILE, (nickName: string) => {
-      subGetProfile(nickName);
+    chatSocket.on(ChatSubDestination.GET_PROFILE, setNickName);
+    chatSocket.on(ChatSubDestination.JOINED_NEW_MEMBER, subNewMemberJoined);
+    chatSocket.on(ChatSubDestination.LEAVED_EXISTING_MEMBER, subMemberLeaved);
+    chatSocket.on(ChatSubDestination.NEW_MESSAGE, subNewMessage);
+    chatSocket.on('disconnect', () => {
+      chatSocket.removeAllListeners();
     });
 
-    socket.on(ChatSubDestination.NEW_MESSAGE, (message: SentMessage) => {
-      subNewMessage(message);
-    });
+    setSocket(chatSocket);
   };
 
   const leaveAsync = async (): Promise<void> => {
     const deviceInfo = await getDeviceInfo();
-    if (!deviceInfo) {
+    if (!deviceInfo || !socket) {
       return;
     }
 
     try {
-      socketRef.current?.emit(ChatPubDestination.LEAVE_ROOM, {
+      socket.emit(ChatPubDestination.LEAVE_ROOM, {
         roomId,
         deviceType: deviceInfo.deviceType,
         deviceId: deviceInfo.deviceId,
+        nickName,
       } as LeaveRoomRequest);
 
       if (handleDisconnect) {
         handleDisconnect();
+        setNickName('');
+        setSocket(null);
       }
 
-      socketRef.current?.off(ChatSubDestination.GET_PROFILE);
-      socketRef.current?.off(ChatSubDestination.NEW_MESSAGE);
+      socket.off(ChatSubDestination.GET_PROFILE, setNickName);
+      socket.off(ChatSubDestination.JOINED_NEW_MEMBER, subNewMemberJoined);
+      socket.off(ChatSubDestination.LEAVED_EXISTING_MEMBER, subMemberLeaved);
+      socket.off(ChatSubDestination.NEW_MESSAGE, subNewMessage);
     } finally {
-      socketRef.current?.disconnect();
+      socket.disconnect();
     }
   };
 
-  function connectUser(): void {
-    const chatSocket = io(apiKeys.chatDomain, {
-      reconnectionAttempts: 2,
-      transports: ['websocket', 'polling', 'flashsocket'],
-      path: '/ws-chat/',
-    });
-
-    initAsync(chatSocket);
-
-    socketRef.current = chatSocket;
-  }
-
   useEffect(() => {
-    connectUser();
+    initAsync();
 
     return () => {
       leaveAsync();
     };
   }, []);
 
-  return socketRef.current;
+  return { chatSocket: socket, nickName };
 }

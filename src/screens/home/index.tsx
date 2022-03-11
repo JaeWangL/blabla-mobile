@@ -7,6 +7,7 @@ import { useRecoilValue } from 'recoil';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation, CompositeNavigationProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import FloatingButton from '@/components/floatingButton';
 import { queryKeys } from '@/configs/api_keys';
 import { HomeParamsList, PermissionedParamsList, ScreenTypes } from '@/configs/screen_types';
 import { PostPreviewDTO } from '@/dtos/post_dtos';
@@ -56,6 +57,10 @@ function HomeScreen(): JSX.Element {
     });
   }, []);
 
+  const onFABPress = useCallback((): void => {
+    navigation.navigate(ScreenTypes.HOME_POST_WRITE);
+  }, []);
+
   if (isLoading) {
     return <Text>Loading ...</Text>;
   }
@@ -63,25 +68,28 @@ function HomeScreen(): JSX.Element {
     return <Text>Error!!</Text>;
   }
   return (
-    <MapView
-      style={styles.mapWrapper}
-      provider="google"
-      customMapStyle={customMapStyles}
-      initialRegion={curruentRegion}
-      showsUserLocation
-      loadingEnabled
-      minZoomLevel={12}
-      scrollEnabled={false}
-    >
-      {postsData?.map((post) => (
-        <Marker
-          key={post.id}
-          coordinate={getPostCoordinate(post.latitude, post.longitude)}
-          title={post.title}
-          onPress={() => onPostMarkerPress(post)}
-        />
-      ))}
-    </MapView>
+    <>
+      <MapView
+        style={styles.mapWrapper}
+        provider="google"
+        customMapStyle={customMapStyles}
+        initialRegion={curruentRegion}
+        showsUserLocation
+        loadingEnabled
+        minZoomLevel={12}
+        scrollEnabled={false}
+      >
+        {postsData?.map((post) => (
+          <Marker
+            key={post.id}
+            coordinate={getPostCoordinate(post.latitude, post.longitude)}
+            title={post.title}
+            onPress={() => onPostMarkerPress(post)}
+          />
+        ))}
+      </MapView>
+      <FloatingButton onPress={onFABPress} />
+    </>
   );
 }
 

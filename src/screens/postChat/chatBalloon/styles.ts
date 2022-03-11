@@ -12,6 +12,7 @@ export const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    paddingVertical: 6,
   },
   cloudContainer: {
     flexDirection: 'row',

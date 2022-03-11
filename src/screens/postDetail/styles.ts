@@ -85,7 +85,7 @@ export const styles = StyleSheet.create({
     height: 32,
   },
   chatButtonLabel: {
-    fontSize: 10,
+    fontSize: 12,
     fontFamily: 'PretendardRegular',
   },
 });

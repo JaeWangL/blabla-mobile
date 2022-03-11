@@ -2,6 +2,7 @@ import { memo } from 'react';
 import IsEqual from 'react-fast-compare';
 import { TouchableOpacity } from 'react-native';
 import Animated from 'react-native-reanimated';
+import { defaultTheme } from '@/themes';
 import { styles } from './styles';
 
 type FloatingButtonProps = {
@@ -45,7 +46,7 @@ function FloatingButton(props: FloatingButtonProps): JSX.Element {
 
 FloatingButton.defaultProps = {
   size: 60,
-  backgroundColor: '#2EC4B6',
+  backgroundColor: defaultTheme.primary,
   offset: 24,
 } as FloatingButtonProps;
 

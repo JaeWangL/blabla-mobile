@@ -6,7 +6,7 @@ export enum ChatPubDestination {
 
 export enum ChatSubDestination {
   GET_PROFILE = 'getProfile',
-  JOIN_NEW_MEMBER = 'joinedNewMember',
+  JOINED_NEW_MEMBER = 'joinedNewMember',
   LEAVED_EXISTING_MEMBER = 'leavedExistingMember',
   NEW_MESSAGE = 'newMessage',
 }
