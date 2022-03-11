@@ -5,23 +5,29 @@ import { Text, View } from 'react-native-ui-lib';
 import { styles } from './styles';
 
 type BalloonLeftProps = {
+  senderNickName: string;
+  displayNickName?: boolean;
   message: string;
 };
 
 function BalloonLeft(props: BalloonLeftProps): JSX.Element {
-  const { message } = props;
+  const { displayNickName, message, senderNickName } = props;
 
   return (
-    <View style={styles.balloonOthers}>
-      <View style={styles.cloudContainer}>
-        <View style={[styles.triangle, styles.triangleLeft]} />
-        <View style={[styles.cloud, styles.cloudLeft]}>
-          <Text>{message}</Text>
+    <View>
+      {displayNickName && <Text style={styles.nickName}>{senderNickName}</Text>}
+      <View style={[styles.balloon, styles.others]}>
+        <View style={[styles.cloudContainer, styles.cloudLeft]}>
+          <Text style={[styles.messageLabel, styles.messageOthers]}>{message}</Text>
         </View>
+        <Text style={styles.dateLabel}>{DayJS(new Date()).format('A hh:mm')}</Text>
       </View>
-      <Text style={styles.dateLabel}>{DayJS(new Date()).format('YYYY-MM-DD')}</Text>
     </View>
   );
 }
+
+BalloonLeft.defaultProps = {
+  displayNickName: true,
+} as BalloonLeftProps;
 
 export default memo(BalloonLeft, IsEqual);

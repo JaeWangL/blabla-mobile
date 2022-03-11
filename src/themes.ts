@@ -6,6 +6,7 @@ export const colors = {
   gray600: '#888888',
   gray500: '#B2BEC3',
   gray400: '#DFE6E9',
+  gray300: '#EDF1F2',
 };
 
 export type Colors = typeof colors;

@@ -1,9 +1,10 @@
 import DayJS from 'dayjs';
-import { memo, useCallback, useRef, useState } from 'react';
+import { memo, useCallback, useMemo, useRef, useState } from 'react';
 import IsEqual from 'react-fast-compare';
 import { FlatList, ListRenderItemInfo } from 'react-native';
 import { Button, Incubator, Text, View } from 'react-native-ui-lib';
 import { useRoute, RouteProp } from '@react-navigation/native';
+import IcSend from '@assets/icons/ic_send.svg';
 import KeyboardAwareScrollView from '@/components/keyboardAwareScrollView';
 import { ArchivesParamsList, ScreenTypes } from '@/configs/screen_types';
 import { ChatPubDestination } from '@/configs/socket_keys';
@@ -64,9 +65,18 @@ function PostChatScreen(): JSX.Element {
     messagesRef.current?.scrollToEnd({ animated: true });
   }, [messagesRef.current]);
 
+  const getLastMessage = useMemo(() => messages.pop(), []);
+
   const renderMessages = useCallback(
     (info: ListRenderItemInfo<MessageState>): JSX.Element => {
-      return <ChatBalloon isReceived={info.item.nickName !== nickName} message={info.item.message} />;
+      return (
+        <ChatBalloon
+          senderNickName={info.item.nickName}
+          currentNickName={nickName}
+          displaySenderNickName={getLastMessage?.nickName !== info.item.nickName}
+          message={info.item.message}
+        />
+      );
     },
     [nickName],
   );
@@ -78,6 +88,7 @@ function PostChatScreen(): JSX.Element {
     <KeyboardAwareScrollView>
       <>
         <FlatList
+          contentContainerStyle={styles.messageListContent}
           ref={messagesRef}
           data={messages}
           renderItem={renderMessages}
@@ -91,13 +102,7 @@ function PostChatScreen(): JSX.Element {
           placeholder="메세지를 입력해 주세요 ..."
           multiline
           trailingAccessory={
-            <Button
-              style={styles.buttonSend}
-              labelStyle={styles.buttonSendLabel}
-              label="보내기"
-              onPress={onSendClick}
-              avoidInnerPadding
-            />
+            <Button style={styles.buttonSend} iconSource={IcSend} onPress={onSendClick} avoidInnerPadding />
           }
         />
       </>

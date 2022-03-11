@@ -1,56 +1,50 @@
 import { Dimensions, StyleSheet } from 'react-native';
-import { defaultTheme } from '@/themes';
+import { colors, defaultTheme } from '@/themes';
 
 export const styles = StyleSheet.create({
-  balloonMe: {
+  balloon: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'flex-end',
     paddingVertical: 6,
   },
-  balloonOthers: {
-    flexDirection: 'row',
-    alignItems: 'center',
+  me: {
+    justifyContent: 'flex-end',
+  },
+  others: {
     justifyContent: 'flex-start',
-    paddingVertical: 6,
   },
   cloudContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  triangle: {
-    borderLeftWidth: 10,
-    borderRightWidth: 10,
-    borderBottomWidth: 15,
-    borderLeftColor: 'transparent',
-    borderRightColor: 'transparent',
-    backgroundColor: 'transparent',
-  },
-  triangleLeft: {
-    transform: [{ rotate: '-90deg' }],
-    borderBottomColor: defaultTheme.secondary,
-  },
-  triangleRight: {
-    transform: [{ rotate: '90deg' }],
-    borderBottomColor: defaultTheme.primary,
-  },
-  cloud: {
-    flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'center',
-    padding: 16,
+    padding: 8,
     borderRadius: 8,
     maxWidth: Dimensions.get('window').width - 120,
   },
   cloudLeft: {
     left: -3,
-    backgroundColor: defaultTheme.secondary,
-    marginRight: 16,
+    backgroundColor: colors.gray300,
+    marginRight: 4,
   },
   cloudRight: {
     left: 3,
     backgroundColor: defaultTheme.primary,
-    marginLeft: 16,
+    marginLeft: 4,
+  },
+  nickName: {
+    paddingTop: 6,
+    fontSize: 14,
+    fontFamily: 'PretendardBold',
+  },
+  messageLabel: {
+    fontSize: 14,
+    fontFamily: 'PretendardRegular',
+  },
+  messageOthers: {
+    color: defaultTheme.titleDefault,
+  },
+  messageMe: {
+    color: 'white',
   },
   dateLabel: {
     fontSize: 12,
