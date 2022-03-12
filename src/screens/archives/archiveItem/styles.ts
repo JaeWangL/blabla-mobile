@@ -55,7 +55,7 @@ export const styles = StyleSheet.create({
     color: defaultTheme.primary,
     fontFamily: 'PretendardBold',
   },
-  createdTime: {
+  captionLabel: {
     fontSize: 14,
     color: defaultTheme.captionDefault,
     fontFamily: 'PretendardRegular',

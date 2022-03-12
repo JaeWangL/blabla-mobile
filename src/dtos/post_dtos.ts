@@ -28,6 +28,7 @@ export interface PostDetailDTO {
   title: string;
   contents: string;
   thumbnailUrl?: string;
+  joinedUsers: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -39,6 +40,8 @@ export interface PostPreviewDTO {
   title: string;
   contentsSnippet: string;
   thumbnailUrl?: string;
+  distanceM: number;
+  joinedUsers: number;
   createdAt: Date;
   updatedAt: Date;
 }

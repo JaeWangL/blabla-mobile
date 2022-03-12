@@ -1,3 +1,4 @@
+import DayJS from 'dayjs';
 import { memo, useCallback } from 'react';
 import IsEqual from 'react-fast-compare';
 import { ActivityIndicator, ScrollView } from 'react-native';
@@ -66,7 +67,7 @@ function PostDetailScreen(): JSX.Element {
           </View>
           <View style={styles.captionContainer}>
             <Text style={styles.distance}>15M</Text>
-            <Text style={styles.createdTime}> · 1시간 전 </Text>
+            <Text style={styles.createdTime}>{` · ${DayJS().diff(postData.createdAt, 'hour')}시간 전`}</Text>
           </View>
         </View>
         <View style={styles.divider} />
@@ -78,7 +79,7 @@ function PostDetailScreen(): JSX.Element {
       <View style={styles.gotoChatContainer}>
         <View style={styles.chatDescContainer}>
           <IcChat width={16} height={16} />
-          <Text style={styles.createdTime}>현재 32명이 채팅방에 참여 중입니다.</Text>
+          <Text style={styles.createdTime}>{`현재 ${postData.joinedUsers}명이 채팅방에 참여 중입니다.`}</Text>
         </View>
         <Button
           avoidInnerPadding

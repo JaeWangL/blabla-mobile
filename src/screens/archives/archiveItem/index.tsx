@@ -1,3 +1,4 @@
+import DayJS from 'dayjs';
 import { memo, useCallback } from 'react';
 import IsEqual from 'react-fast-compare';
 import { Image, Text, TouchableOpacity, View } from 'react-native';
@@ -47,12 +48,12 @@ function ArchiveItem(props: ArchiveItemProps): JSX.Element {
             </Text>
             <View style={styles.captionContainer}>
               <View style={styles.captionContentContainer}>
-                <Text style={styles.distance}>15M</Text>
-                <Text style={styles.createdTime}> · 1시간 전 </Text>
+                <Text style={styles.distance}>{item.distanceM}M</Text>
+                <Text style={styles.captionLabel}>{` · ${DayJS().diff(item.createdAt, 'hour')}시간 전`}</Text>
               </View>
               <View style={styles.captionContentContainer}>
                 <IcChat width={16} height={16} />
-                <Text style={styles.createdTime}>3</Text>
+                <Text style={styles.captionLabel}>{item.joinedUsers}</Text>
               </View>
             </View>
           </View>
