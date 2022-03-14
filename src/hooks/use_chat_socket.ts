@@ -2,14 +2,20 @@ import { useEffect, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { apiKeys } from '../configs/api_keys';
 import { ChatPubDestination, ChatSubDestination } from '../configs/socket_keys';
-import { JoinRoomRequest, LeaveRoomRequest, SentMessage } from '../dtos/chat_dtos';
+import {
+  JoinRoomRequest,
+  JoinedNewMember,
+  LeaveRoomRequest,
+  LeavedExistingMember,
+  SentMessage,
+} from '../dtos/chat_dtos';
 import { getDeviceInfo } from '../helpers/device_utils';
 
 type ChatSocketProps = {
   roomId: string;
-  subNewMemberJoined: (nickName: string) => void;
-  subMemberLeaved: (nickName: string) => void;
-  subNewMessage: (message: SentMessage) => void;
+  subNewMemberJoined: (res: JoinedNewMember) => void;
+  subMemberLeaved: (res: LeavedExistingMember) => void;
+  subNewMessage: (res: SentMessage) => void;
   handleDisconnect?: () => void;
 };
 
@@ -49,9 +55,6 @@ export function useChatSocket(props: ChatSocketProps): ChatSocketType {
     chatSocket.on(ChatSubDestination.JOINED_NEW_MEMBER, subNewMemberJoined);
     chatSocket.on(ChatSubDestination.LEAVED_EXISTING_MEMBER, subMemberLeaved);
     chatSocket.on(ChatSubDestination.NEW_MESSAGE, subNewMessage);
-    chatSocket.on('disconnect', () => {
-      chatSocket.removeAllListeners();
-    });
 
     setSocket(chatSocket);
   };

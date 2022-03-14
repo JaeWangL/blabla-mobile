@@ -8,17 +8,23 @@ type ChatBalloonProps = {
   currentNickName: string;
   displaySenderNickName?: boolean;
   message: string;
+  createdAt: Date;
 };
 
 function ChatBalloon(props: ChatBalloonProps): JSX.Element {
-  const { currentNickName, displaySenderNickName, message, senderNickName } = props;
+  const { createdAt, currentNickName, displaySenderNickName, message, senderNickName } = props;
 
   const isReceived = useMemo(() => currentNickName !== senderNickName, []);
 
   return isReceived ? (
-    <BalloonLeft senderNickName={senderNickName} displayNickName={displaySenderNickName} message={message} />
+    <BalloonLeft
+      senderNickName={senderNickName}
+      displayNickName={displaySenderNickName}
+      message={message}
+      createdAt={createdAt}
+    />
   ) : (
-    <BalloonRight message={message} />
+    <BalloonRight message={message} createdAt={createdAt} />
   );
 }
 

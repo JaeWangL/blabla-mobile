@@ -5,6 +5,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, Suspense } from 'react';
 import { AppearanceProvider } from 'react-native-appearance';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { RecoilRoot } from 'recoil';
 import { RootNavigator } from './navigation/root_navigator';
@@ -29,9 +30,11 @@ function App(): JSX.Element {
   }, [fontsLoaded]);
 
   return (
-    <Suspense fallback={<AppLoading />}>
-      <RootNavigator />
-    </Suspense>
+    <SafeAreaProvider>
+      <Suspense fallback={<AppLoading />}>
+        <RootNavigator />
+      </Suspense>
+    </SafeAreaProvider>
   );
 }
 

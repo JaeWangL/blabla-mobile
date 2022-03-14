@@ -1,6 +1,7 @@
 import { memo, useCallback } from 'react';
 import IsEqual from 'react-fast-compare';
-import { FlatList, SafeAreaView, Text, View } from 'react-native';
+import { FlatList, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';

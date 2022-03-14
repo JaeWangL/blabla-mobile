@@ -11,13 +11,9 @@ export function ArchivesNavigator(): JSX.Element {
   return (
     <Main.Navigator screenOptions={{ headerShown: false }}>
       <Main.Screen name={ScreenTypes.ARCHIVES} component={ArchivesScreen} />
-      <Main.Screen
-        name={ScreenTypes.ARCHIVES_POST_DETAIL}
-        component={PostDetailScreen}
-        options={{ headerShown: true }}
-      />
-      <Main.Screen name={ScreenTypes.ARCHIVES_POST_WRITE} component={PostWriteScreen} options={{ headerShown: true }} />
-      <Main.Screen name={ScreenTypes.ARCHIVES_POST_CHAT} component={PostChatScreen} options={{ headerShown: true }} />
+      <Main.Screen name={ScreenTypes.SHARED_POST_DETAIL} component={PostDetailScreen} />
+      <Main.Screen name={ScreenTypes.SHARED_POST_WRITE} component={PostWriteScreen} />
+      <Main.Screen name={ScreenTypes.SHARED_POST_CHAT} component={PostChatScreen} />
     </Main.Navigator>
   );
 }

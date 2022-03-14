@@ -10,17 +10,16 @@ export enum ScreenTypes {
 
   STACK_ARCHIVES = 'StackArchives',
   ARCHIVES = 'Archives',
-  ARCHIVES_POST_DETAIL = 'ArchivesPostDetail',
-  ARCHIVES_POST_WRITE = 'ArchivesPostWrite',
-  ARCHIVES_POST_CHAT = 'ArchivesPostChat',
 
   STACK_HOME = 'StackHome',
   HOME = 'Home',
-  HOME_POST_DETAIL = 'HomePostDetail',
-  HOME_POST_WRITE = 'HomePostWrite',
-  HOME_POST_CHAT = 'HomePostChat',
 
   SETTINGS = 'Settings',
+
+  // Shared by tabs
+  SHARED_POST_DETAIL = 'SharedPostDetail',
+  SHARED_POST_WRITE = 'SharedPostWrite',
+  SHARED_POST_CHAT = 'SharedPostChat',
 }
 
 export type UnPermissionedParamsList = {
@@ -35,16 +34,16 @@ export type PermissionedParamsList = {
 
 export type ArchivesParamsList = {
   [ScreenTypes.ARCHIVES]: undefined;
-  [ScreenTypes.ARCHIVES_POST_DETAIL]: { post: PostPreviewDTO };
-  [ScreenTypes.ARCHIVES_POST_WRITE]: undefined;
-  [ScreenTypes.ARCHIVES_POST_CHAT]: { post: PostPreviewDTO };
+  [ScreenTypes.SHARED_POST_DETAIL]: { post: PostPreviewDTO };
+  [ScreenTypes.SHARED_POST_WRITE]: undefined;
+  [ScreenTypes.SHARED_POST_CHAT]: { post: PostPreviewDTO };
 };
 
 export type HomeParamsList = {
   [ScreenTypes.HOME]: undefined;
-  [ScreenTypes.HOME_POST_DETAIL]: { post: PostPreviewDTO };
-  [ScreenTypes.HOME_POST_WRITE]: undefined;
-  [ScreenTypes.HOME_POST_CHAT]: { post: PostPreviewDTO };
+  [ScreenTypes.SHARED_POST_DETAIL]: { post: PostPreviewDTO };
+  [ScreenTypes.SHARED_POST_WRITE]: undefined;
+  [ScreenTypes.SHARED_POST_CHAT]: { post: PostPreviewDTO };
 };
 
 export type RootStackParamList = {

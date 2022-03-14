@@ -2,10 +2,12 @@ import * as ImagePicker from 'expo-image-picker';
 import { memo, useCallback, useEffect, useState } from 'react';
 import IsEqual from 'react-fast-compare';
 import { ActivityIndicator, Alert, Image } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { AnimatedImage, Badge, Incubator, Text, View, TouchableOpacity } from 'react-native-ui-lib';
 import { useRecoilValue } from 'recoil';
 import IcClose from '@assets/icons/ic_close.png';
 import ThumbnailPlaceholder from '@assets/images/thumbnail_placeholder_upload.png';
+import CustomAppBar from '@/components/customAppbar';
 import Divider from '@/components/divider';
 import KeyboardAwareScrollView from '@/components/keyboardAwareScrollView';
 import { CreatePostRequest } from '@/dtos/post_dtos';
@@ -14,13 +16,14 @@ import { createPost } from '@/services/posts_service';
 import { uploadThumbnail } from '@/services/upload_service';
 import { getDeviceInfo } from '@/helpers/device_utils';
 import { defaultTheme } from '@/themes';
+import { initThumbnail, Thumbnail } from './interfaces';
 import { styles } from './styles';
 
 const { TextField } = Incubator;
 
 function PostWrite(): JSX.Element {
   const locations = useRecoilValue(locationAtom);
-  const [thumbnail, setThumbnail] = useState('');
+  const [thumbnail, setThumbnail] = useState<Thumbnail>(initThumbnail);
   const [uploadPercentage, setPercentage] = useState(0);
   const [title, setTitle] = useState<string>('');
   const [contents, setContents] = useState<string>('');
@@ -28,7 +31,7 @@ function PostWrite(): JSX.Element {
 
   useEffect(() => {
     return () => {
-      setThumbnail('');
+      setThumbnail(initThumbnail);
       setPercentage(0);
       setTitle('');
       setContents('');
@@ -45,7 +48,7 @@ function PostWrite(): JSX.Element {
       setPercentage(20);
       const uploadResponse = await uploadThumbnail(pickerResult.uri, setPercentage);
       if (uploadResponse) {
-        setThumbnail(uploadResponse.thumbnailUrl);
+        setThumbnail({ thumbnailUrl: uploadResponse.thumbnailUrl, originalFileName: uploadResponse.origianlFileName });
       } else {
         Alert.alert('Upload Error', 'Maximum file size is exceeded.', [{ text: 'OK' }]);
       }
@@ -90,6 +93,8 @@ function PostWrite(): JSX.Element {
         longitude: locations.longitude,
         title,
         contents,
+        thumbnailUrl: thumbnail.thumbnailUrl,
+        originalFileName: thumbnail.originalFileName,
       };
       const res = await createPost(req);
       if (res) {
@@ -102,16 +107,28 @@ function PostWrite(): JSX.Element {
     } finally {
       setLoading(false);
     }
-  }, [title, contents, thumbnail]);
+  }, [locations, title, contents, thumbnail]);
+
+  const renderRightBarItem = useCallback((): JSX.Element => {
+    return (
+      <Text style={styles.writeButton} onPress={onWritePress}>
+        완료
+      </Text>
+    );
+  }, []);
 
   return (
-    <KeyboardAwareScrollView useScroll>
-      <View style={styles.wrapper}>
+    <SafeAreaView style={styles.wrapper}>
+      <CustomAppBar title="나의 소식 전하기" goBack accessoryRight={renderRightBarItem()} />
+      <View style={styles.contentContainer}>
         <TouchableOpacity onPress={onThumbnailPress}>
           <View style={styles.thumbnailContainer}>
-            {thumbnail ? (
+            {thumbnail.thumbnailUrl ? (
               <View>
-                <AnimatedImage style={[styles.thumbnail, styles.withBorderRadius]} source={{ uri: thumbnail }} />
+                <AnimatedImage
+                  style={[styles.thumbnail, styles.withBorderRadius]}
+                  source={{ uri: thumbnail.thumbnailUrl }}
+                />
                 <Badge
                   backgroundColor={defaultTheme.primary}
                   style={styles.thumbnailRemoveBadge}
@@ -157,7 +174,7 @@ function PostWrite(): JSX.Element {
 개인정보가 노출되지 않도록 주의 바랍니다.`}
         </Text>
       </View>
-    </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 }
 

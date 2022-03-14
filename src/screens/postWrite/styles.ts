@@ -3,6 +3,15 @@ import { defaultTheme } from '@/themes';
 
 export const styles = StyleSheet.create({
   wrapper: {
+    flex: 1,
+    backgroundColor: 'white',
+  },
+  writeButton: {
+    fontSize: 18,
+    color: defaultTheme.primary,
+    fontFamily: 'PretendardBold',
+  },
+  contentContainer: {
     marginHorizontal: 20,
   },
   withBorderRadius: {
