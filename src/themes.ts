@@ -14,6 +14,7 @@ export type Colors = typeof colors;
 export const defaultTheme = {
   primary: colors.primary,
   secondary: colors.secondary,
+  black: colors.black,
   tabInactive: colors.black,
   tabActive: colors.primary,
   backgroundDefault: '#F9F9F9',
@@ -23,3 +24,9 @@ export const defaultTheme = {
   captionDefault: colors.gray600,
   disabled: colors.gray500,
 };
+
+export const zIndices = {
+  appbar: 10,
+};
+
+export const APPBAR_HEIGHT = 60;

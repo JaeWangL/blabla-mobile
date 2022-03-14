@@ -2,12 +2,15 @@ import DayJS from 'dayjs';
 import { memo, useCallback } from 'react';
 import IsEqual from 'react-fast-compare';
 import { ActivityIndicator, ScrollView } from 'react-native';
+import { useSafeAreaInsets, SafeAreaView } from 'react-native-safe-area-context';
 import { Avatar, AnimatedImage, Button, Text, View } from 'react-native-ui-lib';
 import { useQuery } from 'react-query';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation, useRoute, CompositeNavigationProp, RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import IcChat from '@assets/icons/ic_chat.svg';
+import { APPBAR_HEIGHT } from '@/themes';
+import CustomAppBar from '@/components/customAppbar';
 import { queryKeys } from '@/configs/api_keys';
 import { ArchivesParamsList, PermissionedParamsList, ScreenTypes } from '@/configs/screen_types';
 import { getPostById } from '@/services/posts_service';
@@ -24,6 +27,7 @@ function PostDetailScreen(): JSX.Element {
   const route = useRoute<ScreenRouteProps>();
   const navigation = useNavigation<ScreenNavigationProps>();
   const { post } = route.params;
+  const insets = useSafeAreaInsets();
   const {
     isLoading,
     error,
@@ -49,8 +53,9 @@ function PostDetailScreen(): JSX.Element {
     );
   }
   return (
-    <View style={styles.wrapper}>
-      <ScrollView>
+    <SafeAreaView style={styles.wrapper}>
+      <CustomAppBar title="" transparent goBack />
+      <ScrollView style={{ marginTop: -(insets.top + APPBAR_HEIGHT) }}>
         <AnimatedImage
           style={styles.thumbnail}
           source={{ uri: postData.thumbnailUrl }}
@@ -66,7 +71,7 @@ function PostDetailScreen(): JSX.Element {
             <Text style={styles.avatarName}>테스트 닉네임</Text>
           </View>
           <View style={styles.captionContainer}>
-            <Text style={styles.distance}>15M</Text>
+            <Text style={styles.distance}>{post.distanceM}M</Text>
             <Text style={styles.createdTime}>{` · ${DayJS().diff(postData.createdAt, 'hour')}시간 전`}</Text>
           </View>
         </View>
@@ -89,7 +94,7 @@ function PostDetailScreen(): JSX.Element {
           onPress={onGoToChatPress}
         />
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

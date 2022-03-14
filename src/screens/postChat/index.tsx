@@ -1,14 +1,16 @@
 import DayJS from 'dayjs';
-import { memo, useCallback, useMemo, useRef, useState } from 'react';
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import IsEqual from 'react-fast-compare';
 import { FlatList, ListRenderItemInfo } from 'react-native';
-import { Button, Incubator, Text, View } from 'react-native-ui-lib';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { Button, Incubator, Text } from 'react-native-ui-lib';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import IcSend from '@assets/icons/ic_send.svg';
+import CustomAppBar from '@/components/customAppbar';
 import KeyboardAwareScrollView from '@/components/keyboardAwareScrollView';
 import { ArchivesParamsList, ScreenTypes } from '@/configs/screen_types';
 import { ChatPubDestination } from '@/configs/socket_keys';
-import { SendMessageRequest, SentMessage } from '@/dtos/chat_dtos';
+import { JoinedNewMember, LeavedExistingMember, SendMessageRequest, SentMessage } from '@/dtos/chat_dtos';
 import { useChatSocket } from '@/hooks/use_chat_socket';
 import ChatBalloon from './chatBalloon';
 import { MessageState } from './interfaces';
@@ -24,23 +26,32 @@ function PostChatScreen(): JSX.Element {
   const [messages, setMessages] = useState<MessageState[]>([]);
   const [text, setText] = useState<string>('');
 
-  const handleSubNewMessage = useCallback((message: SentMessage) => {
-    setMessages((prev) => [...prev, { nickName: message.nickName, message: message.message } as MessageState]);
+  const handleSubNewMessage = useCallback((res: SentMessage) => {
+    setMessages((prev) => [
+      ...prev,
+      { nickName: res.nickName, message: res.message, createdAt: res.createdAt } as MessageState,
+    ]);
   }, []);
 
-  const handleNewMemberJoined = useCallback((nickName: string) => {
-    setMessages((prev) => [...prev, { nickName: '알림', message: `${nickName} 님이 입장하셨습니다.` } as MessageState]);
+  const handleNewMemberJoined = useCallback((res: JoinedNewMember) => {
+    setMessages((prev) => [
+      ...prev,
+      { nickName: '알림', message: `${res.nickName} 님이 입장하셨습니다.`, createdAt: res.joinedAt } as MessageState,
+    ]);
   }, []);
 
-  const handleMemberLeaved = useCallback((nickName: string) => {
-    setMessages((prev) => [...prev, { nickName: '알림', message: `${nickName} 님이 퇴장하셨습니다.` } as MessageState]);
+  const handleMemberLeaved = useCallback((res: LeavedExistingMember) => {
+    setMessages((prev) => [
+      ...prev,
+      { nickName: '알림', message: `${res.nickName} 님이 퇴장하셨습니다.`, createdAt: res.leavedAt } as MessageState,
+    ]);
   }, []);
 
   const handleSocketDisconnect = useCallback(() => {
     setMessages([]);
   }, []);
 
-  const { chatSocket, nickName } = useChatSocket({
+  const { chatSocket, nickName, leaveAsync } = useChatSocket({
     roomId: route.params.post.id,
     subNewMemberJoined: handleNewMemberJoined,
     subMemberLeaved: handleMemberLeaved,
@@ -48,8 +59,16 @@ function PostChatScreen(): JSX.Element {
     handleDisconnect: handleSocketDisconnect,
   });
 
+  useEffect(() => {
+    return () => {
+      if (chatSocket) {
+        leaveAsync(chatSocket);
+      }
+    };
+  }, [chatSocket]);
+
   const onSendClick = useCallback((): void => {
-    if (!nickName || !text) {
+    if (!chatSocket || !nickName || !text) {
       return;
     }
 
@@ -85,28 +104,33 @@ function PostChatScreen(): JSX.Element {
     return <Text>Loading ...</Text>;
   }
   return (
-    <KeyboardAwareScrollView>
-      <>
-        <FlatList
-          contentContainerStyle={styles.messageListContent}
-          ref={messagesRef}
-          data={messages}
-          renderItem={renderMessages}
-          onContentSizeChange={onMessageListUpdated}
-          onLayout={onMessageListUpdated}
-        />
-        <TextField
-          containerStyle={styles.inputContainer}
-          value={text}
-          onChangeText={setText}
-          placeholder="메세지를 입력해 주세요 ..."
-          multiline
-          trailingAccessory={
-            <Button style={styles.buttonSend} iconSource={IcSend} onPress={onSendClick} avoidInnerPadding />
-          }
-        />
-      </>
-    </KeyboardAwareScrollView>
+    <SafeAreaView edges={['top']} style={styles.wrapper}>
+      <CustomAppBar title="소식 나누기" goBack />
+      <KeyboardAwareScrollView>
+        <>
+          <FlatList
+            contentContainerStyle={styles.messageListContent}
+            ref={messagesRef}
+            data={messages}
+            renderItem={renderMessages}
+            keyExtractor={(item) => DayJS(item.createdAt).valueOf().toString()}
+            onContentSizeChange={onMessageListUpdated}
+            onLayout={onMessageListUpdated}
+          />
+          <TextField
+            containerStyle={styles.inputContainer}
+            fieldStyle={styles.inputfieldContainer}
+            value={text}
+            onChangeText={setText}
+            placeholder="메세지를 입력해 주세요 ..."
+            multiline
+            trailingAccessory={
+              <Button style={styles.buttonSend} iconSource={IcSend} onPress={onSendClick} avoidInnerPadding />
+            }
+          />
+        </>
+      </KeyboardAwareScrollView>
+    </SafeAreaView>
   );
 }
 

@@ -30,4 +30,15 @@ export interface SendMessageRequest {
 export interface SentMessage {
   nickName: string;
   message: string;
+  createdAt: Date;
+}
+
+export interface JoinedNewMember {
+  nickName: string;
+  joinedAt: Date;
+}
+
+export interface LeavedExistingMember {
+  nickName: string;
+  leavedAt: Date;
 }

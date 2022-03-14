@@ -18,7 +18,7 @@ function KeyboardAwareScrollView(props: KeyboardAwareScrollViewProps): JSX.Eleme
     if (Platform.OS === 'ios') {
       // @ts-ignore
       StatusBarManager.getHeight((statusBarFrameData) => {
-        setVerticalOffset(statusBarFrameData.height + 44);
+        setVerticalOffset(statusBarFrameData.height);
       });
     }
   }, []);

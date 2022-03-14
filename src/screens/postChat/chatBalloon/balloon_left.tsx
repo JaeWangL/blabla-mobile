@@ -8,10 +8,11 @@ type BalloonLeftProps = {
   senderNickName: string;
   displayNickName?: boolean;
   message: string;
+  createdAt: Date;
 };
 
 function BalloonLeft(props: BalloonLeftProps): JSX.Element {
-  const { displayNickName, message, senderNickName } = props;
+  const { createdAt, displayNickName, message, senderNickName } = props;
 
   return (
     <View>
@@ -20,7 +21,7 @@ function BalloonLeft(props: BalloonLeftProps): JSX.Element {
         <View style={[styles.cloudContainer, styles.cloudLeft]}>
           <Text style={[styles.messageLabel, styles.messageOthers]}>{message}</Text>
         </View>
-        <Text style={styles.dateLabel}>{DayJS(new Date()).format('A hh:mm')}</Text>
+        <Text style={styles.dateLabel}>{DayJS(createdAt).format('A hh:mm')}</Text>
       </View>
     </View>
   );
