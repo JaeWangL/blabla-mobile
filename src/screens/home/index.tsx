@@ -1,7 +1,7 @@
 import { memo, useCallback, useMemo } from 'react';
 import IsEqual from 'react-fast-compare';
-import { Text } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
+import { Text, View } from 'react-native-ui-lib';
 import { useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
@@ -52,23 +52,23 @@ function HomeScreen(): JSX.Element {
   }, []);
 
   const onPostMarkerPress = useCallback((item: PostPreviewDTO): void => {
-    navigation.navigate(ScreenTypes.HOME_POST_DETAIL, {
+    navigation.navigate(ScreenTypes.SHARED_POST_DETAIL, {
       post: item,
     });
   }, []);
 
   const onFABPress = useCallback((): void => {
-    navigation.navigate(ScreenTypes.HOME_POST_WRITE);
+    navigation.navigate(ScreenTypes.SHARED_POST_WRITE);
   }, []);
 
-  if (isLoading) {
+  if (isLoading || !postsData) {
     return <Text>Loading ...</Text>;
   }
   if (error) {
     return <Text>Error!!</Text>;
   }
   return (
-    <>
+    <View style={styles.wrapper}>
       <MapView
         style={styles.mapWrapper}
         provider="google"
@@ -76,10 +76,8 @@ function HomeScreen(): JSX.Element {
         initialRegion={curruentRegion}
         showsUserLocation
         loadingEnabled
-        minZoomLevel={12}
-        scrollEnabled={false}
       >
-        {postsData?.map((post) => (
+        {postsData.map((post) => (
           <Marker
             key={post.id}
             coordinate={getPostCoordinate(post.latitude, post.longitude)}
@@ -89,7 +87,7 @@ function HomeScreen(): JSX.Element {
         ))}
       </MapView>
       <FloatingButton onPress={onFABPress} />
-    </>
+    </View>
   );
 }
 

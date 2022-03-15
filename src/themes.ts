@@ -27,6 +27,7 @@ export const defaultTheme = {
 
 export const zIndices = {
   appbar: 10,
+  floatingButton: 9,
 };
 
 export const APPBAR_HEIGHT = 60;

@@ -1,14 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import io, { Socket } from 'socket.io-client';
 import { apiKeys } from '../configs/api_keys';
 import { ChatPubDestination, ChatSubDestination } from '../configs/socket_keys';
-import {
-  JoinRoomRequest,
-  JoinedNewMember,
-  LeaveRoomRequest,
-  LeavedExistingMember,
-  SentMessage,
-} from '../dtos/chat_dtos';
+import { JoinRoomRequest, JoinedNewMember, LeavedExistingMember, SentMessage } from '../dtos/chat_dtos';
 import { getDeviceInfo } from '../helpers/device_utils';
 
 type ChatSocketProps = {
@@ -26,11 +20,11 @@ type ChatSocketType = {
 
 export function useChatSocket(props: ChatSocketProps): ChatSocketType {
   const { handleDisconnect, roomId, subMemberLeaved, subNewMemberJoined, subNewMessage } = props;
-  const [socket, setSocket] = useState<Socket | null>(null);
+  const socket = useRef<Socket | null>(null);
   const [nickName, setNickName] = useState<string>('');
 
-  const initAsync = async (): Promise<void> => {
-    if (socket) {
+  const initAsync = useCallback(async (): Promise<void> => {
+    if (socket.current) {
       return;
     }
 
@@ -56,37 +50,19 @@ export function useChatSocket(props: ChatSocketProps): ChatSocketType {
     chatSocket.on(ChatSubDestination.LEAVED_EXISTING_MEMBER, subMemberLeaved);
     chatSocket.on(ChatSubDestination.NEW_MESSAGE, subNewMessage);
 
-    setSocket(chatSocket);
-  };
+    socket.current = chatSocket;
+  }, []);
 
-  const leaveAsync = async (): Promise<void> => {
-    const deviceInfo = await getDeviceInfo();
-    if (!deviceInfo || !socket) {
+  const leaveAsync = useCallback(async (): Promise<void> => {
+    if (!socket.current) {
       return;
     }
 
-    try {
-      socket.emit(ChatPubDestination.LEAVE_ROOM, {
-        roomId,
-        deviceType: deviceInfo.deviceType,
-        deviceId: deviceInfo.deviceId,
-        nickName,
-      } as LeaveRoomRequest);
-
-      if (handleDisconnect) {
-        handleDisconnect();
-      }
-
-      socket.off(ChatSubDestination.GET_PROFILE, setNickName);
-      socket.off(ChatSubDestination.JOINED_NEW_MEMBER, subNewMemberJoined);
-      socket.off(ChatSubDestination.LEAVED_EXISTING_MEMBER, subMemberLeaved);
-      socket.off(ChatSubDestination.NEW_MESSAGE, subNewMessage);
-    } finally {
-      socket.disconnect();
-      setNickName('');
-      setSocket(null);
+    if (handleDisconnect) {
+      handleDisconnect();
     }
-  };
+    socket.current?.disconnect();
+  }, [socket.current]);
 
   useEffect(() => {
     initAsync();
@@ -96,5 +72,5 @@ export function useChatSocket(props: ChatSocketProps): ChatSocketType {
     };
   }, []);
 
-  return { chatSocket: socket, nickName };
+  return { chatSocket: socket.current, nickName };
 }

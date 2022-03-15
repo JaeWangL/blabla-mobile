@@ -29,7 +29,10 @@
       "bundleIdentifier": "com.hahahoho.blabla",
       "buildNumber": "1.0.0",
       "supportsTablet": true,
-      "userInterfaceStyle": "light",
+      "userInterfaceStyle": "dark",
+      "config": {
+        "googleMapsApiKey": "AIzaSyAfljNmH-qNq3g0GHC5DxWAzIxkQptVNQY"
+      },
       "infoPlist": {
         "UIBackgroundModes": ["location", "fetch"],
         "NSLocationAlwaysAndWhenInUseUsageDescription": "This app uses the location to track your location.",
@@ -43,6 +46,11 @@
         "backgroundColor": "#FFFFFF"
       },
       "userInterfaceStyle": "dark",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyAfljNmH-qNq3g0GHC5DxWAzIxkQptVNQY"
+        }
+      },
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",

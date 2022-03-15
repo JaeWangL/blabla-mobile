@@ -5,6 +5,7 @@ import { ActivityIndicator, Alert, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AnimatedImage, Badge, Incubator, Text, View, TouchableOpacity } from 'react-native-ui-lib';
 import { useRecoilValue } from 'recoil';
+import { useNavigation } from '@react-navigation/native';
 import IcClose from '@assets/icons/ic_close.png';
 import ThumbnailPlaceholder from '@assets/images/thumbnail_placeholder_upload.png';
 import CustomAppBar from '@/components/customAppbar';
@@ -23,6 +24,7 @@ const { TextField } = Incubator;
 
 function PostWrite(): JSX.Element {
   const locations = useRecoilValue(locationAtom);
+  const navigation = useNavigation();
   const [thumbnail, setThumbnail] = useState<Thumbnail>(initThumbnail);
   const [uploadPercentage, setPercentage] = useState(0);
   const [title, setTitle] = useState<string>('');
@@ -99,6 +101,10 @@ function PostWrite(): JSX.Element {
       const res = await createPost(req);
       if (res) {
         Alert.alert('Post Created', 'New post are created successfully');
+
+        if (navigation.canGoBack()) {
+          navigation.goBack();
+        }
       } else {
         Alert.alert('Creation Failed', 'Error is occured when writing post. Please try again later.');
       }
@@ -115,7 +121,7 @@ function PostWrite(): JSX.Element {
         완료
       </Text>
     );
-  }, []);
+  }, [locations, title, contents, thumbnail]);
 
   return (
     <SafeAreaView style={styles.wrapper}>

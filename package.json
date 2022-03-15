@@ -49,6 +49,7 @@
     "react-native-ui-lib": "^6.10.1",
     "react-native-web": "0.17.1",
     "react-query": "^3.34.16",
+    "react-stomp-hooks": "^2.0.3",
     "recoil": "^0.6.1",
     "socket.io-client": "^4.4.1",
     "sockjs-client": "^1.6.0",

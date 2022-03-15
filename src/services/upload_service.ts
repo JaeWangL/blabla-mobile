@@ -1,11 +1,5 @@
-import axios from 'axios';
 import { apiKeys } from '../configs/api_keys';
 import { UploadedThumbnailDTO } from '../dtos/upload_dtos';
-
-const uploadInstance = axios.create({
-  baseURL: apiKeys.uploadDomain,
-  timeout: 10000,
-});
 
 export const uploadThumbnail = async (
   fileUri: string,

@@ -7,7 +7,10 @@ import { useEffect, Suspense } from 'react';
 import { AppearanceProvider } from 'react-native-appearance';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { StompSessionProvider } from 'react-stomp-hooks';
 import { RecoilRoot } from 'recoil';
+import SockJS from 'sockjs-client';
+import { apiKeys } from './configs/api_keys';
 import { RootNavigator } from './navigation/root_navigator';
 
 const queryClient = new QueryClient();
@@ -30,11 +33,21 @@ function App(): JSX.Element {
   }, [fontsLoaded]);
 
   return (
-    <SafeAreaProvider>
-      <Suspense fallback={<AppLoading />}>
-        <RootNavigator />
-      </Suspense>
-    </SafeAreaProvider>
+    <StompSessionProvider
+      url={apiKeys.locationsStomp}
+      reconnectDelay={5000}
+      heartbeatIncoming={4000}
+      heartbeatOutgoing={4000}
+      webSocketFactory={() => {
+        return new SockJS(apiKeys.locationsSockJS);
+      }}
+    >
+      <SafeAreaProvider>
+        <Suspense fallback={<AppLoading />}>
+          <RootNavigator />
+        </Suspense>
+      </SafeAreaProvider>
+    </StompSessionProvider>
   );
 }
 
