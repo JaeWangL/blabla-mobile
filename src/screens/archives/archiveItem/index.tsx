@@ -23,7 +23,7 @@ function ArchiveItem(props: ArchiveItemProps): JSX.Element {
   const navigation = useNavigation<ScreenNavigationProps>();
 
   const onPress = useCallback((): void => {
-    navigation.navigate(ScreenTypes.ARCHIVES_POST_DETAIL, {
+    navigation.navigate(ScreenTypes.SHARED_POST_DETAIL, {
       post: item,
     });
   }, []);

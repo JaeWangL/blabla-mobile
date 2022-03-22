@@ -18,7 +18,7 @@ import { styles } from './styles';
 
 const { TextField } = Incubator;
 
-type ScreenRouteProps = RouteProp<ArchivesParamsList, ScreenTypes.ARCHIVES_POST_DETAIL>;
+type ScreenRouteProps = RouteProp<ArchivesParamsList, ScreenTypes.SHARED_POST_CHAT>;
 
 function PostChatScreen(): JSX.Element {
   const route = useRoute<ScreenRouteProps>();
@@ -51,21 +51,13 @@ function PostChatScreen(): JSX.Element {
     setMessages([]);
   }, []);
 
-  const { chatSocket, nickName, leaveAsync } = useChatSocket({
+  const { chatSocket, nickName } = useChatSocket({
     roomId: route.params.post.id,
     subNewMemberJoined: handleNewMemberJoined,
     subMemberLeaved: handleMemberLeaved,
     subNewMessage: handleSubNewMessage,
     handleDisconnect: handleSocketDisconnect,
   });
-
-  useEffect(() => {
-    return () => {
-      if (chatSocket) {
-        leaveAsync(chatSocket);
-      }
-    };
-  }, [chatSocket]);
 
   const onSendClick = useCallback((): void => {
     if (!chatSocket || !nickName || !text) {
