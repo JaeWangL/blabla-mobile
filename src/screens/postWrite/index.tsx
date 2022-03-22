@@ -5,11 +5,15 @@ import { ActivityIndicator, Alert, Image } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { AnimatedImage, Badge, Incubator, Text, View, TouchableOpacity } from 'react-native-ui-lib';
 import { useRecoilValue } from 'recoil';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { useNavigation, CompositeNavigationProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import IcClose from '@assets/icons/ic_close.png';
 import ThumbnailPlaceholder from '@assets/images/thumbnail_placeholder_upload.png';
 import CustomAppBar from '@/components/customAppbar';
 import Divider from '@/components/divider';
 import KeyboardAwareScrollView from '@/components/keyboardAwareScrollView';
+import { ArchivesParamsList, PermissionedParamsList } from '@/configs/screen_types';
 import { CreatePostRequest } from '@/dtos/post_dtos';
 import { locationAtom } from '@/recoils/location_states';
 import { createPost } from '@/services/posts_service';
@@ -21,8 +25,14 @@ import { styles } from './styles';
 
 const { TextField } = Incubator;
 
+type ScreenNavigationProps = CompositeNavigationProp<
+  BottomTabNavigationProp<PermissionedParamsList, any>,
+  StackNavigationProp<ArchivesParamsList>
+>;
+
 function PostWrite(): JSX.Element {
   const locations = useRecoilValue(locationAtom);
+  const navigation = useNavigation<ScreenNavigationProps>();
   const [thumbnail, setThumbnail] = useState<Thumbnail>(initThumbnail);
   const [uploadPercentage, setPercentage] = useState(0);
   const [title, setTitle] = useState<string>('');
@@ -75,47 +85,48 @@ function PostWrite(): JSX.Element {
     handleImagePicked(result);
   }, []);
 
-  const onWritePress = useCallback(async (): Promise<void> => {
-    if (isLoading) {
-      return;
-    }
-    const device = await getDeviceInfo();
-    if (!device) {
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const req: CreatePostRequest = {
-        deviceType: device.deviceType,
-        deviceId: device.deviceId,
-        latitude: locations.latitude,
-        longitude: locations.longitude,
-        title,
-        contents,
-        thumbnailUrl: thumbnail.thumbnailUrl,
-        originalFileName: thumbnail.originalFileName,
-      };
-      const res = await createPost(req);
-      if (res) {
-        Alert.alert('Post Created', 'New post are created successfully');
-      } else {
-        Alert.alert('Creation Failed', 'Error is occured when writing post. Please try again later.');
-      }
-    } catch (e) {
-      Alert.alert('Creation Failed', 'Error is occured when writing post. Please try again later.');
-    } finally {
-      setLoading(false);
-    }
-  }, [locations, title, contents, thumbnail]);
-
   const renderRightBarItem = useCallback((): JSX.Element => {
+    const onWritePress = async (): Promise<void> => {
+      if (isLoading) {
+        return;
+      }
+      const device = await getDeviceInfo();
+      if (!device) {
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const req: CreatePostRequest = {
+          deviceType: device.deviceType,
+          deviceId: device.deviceId,
+          latitude: locations.latitude,
+          longitude: locations.longitude,
+          title,
+          contents,
+          thumbnailUrl: thumbnail.thumbnailUrl,
+          originalFileName: thumbnail.originalFileName,
+        };
+        const res = await createPost(req);
+        if (res) {
+          Alert.alert('Post Created', 'New post are created successfully');
+          navigation.goBack();
+        } else {
+          Alert.alert('Creation Failed', 'Error is occured when writing post. Please try again later.');
+        }
+      } catch (e) {
+        Alert.alert('Creation Failed', 'Error is occured when writing post. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     return (
       <Text style={styles.writeButton} onPress={onWritePress}>
         완료
       </Text>
     );
-  }, []);
+  }, [locations, title, contents, thumbnail]);
 
   return (
     <SafeAreaView style={styles.wrapper}>

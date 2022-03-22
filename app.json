@@ -31,10 +31,16 @@
       "supportsTablet": true,
       "userInterfaceStyle": "light",
       "infoPlist": {
-        "UIBackgroundModes": ["location", "fetch"],
+        "UIBackgroundModes": [
+          "location",
+          "fetch"
+        ],
         "NSLocationAlwaysAndWhenInUseUsageDescription": "This app uses the location to track your location.",
         "NSLocationAlwaysUsageDescription": "This app uses the location to track your location.",
-        "NSLocationWhenInUseUsageDescription": "This app uses the location to track your location."
+        "NSLocationWhenInUseUsageDescription": "This app uses the location to track your location.",
+        "NSPhotoLibraryUsageDescription": "The app accesses your photos to let you share them with your friends.",
+        "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera",
+        "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
       }
     },
     "android": {
@@ -46,8 +52,13 @@
       "permissions": [
         "ACCESS_COARSE_LOCATION",
         "ACCESS_FINE_LOCATION",
-        "ACCESS_BACKGROUND_LOCATION"
-      ]
+        "ACCESS_BACKGROUND_LOCATION",
+        "android.permission.CAMERA",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.hahahoho.blabla"
     },
     "web": {
       "favicon": "./assets/favicon.png"
