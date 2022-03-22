@@ -1,15 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { Alert } from 'react-native';
 import io, { Socket } from 'socket.io-client';
 import { apiKeys } from '../configs/api_keys';
 import { ChatPubDestination, ChatSubDestination } from '../configs/socket_keys';
-import {
-  JoinRoomRequest,
-  JoinedNewMember,
-  LeaveRoomRequest,
-  LeavedExistingMember,
-  SentMessage,
-} from '../dtos/chat_dtos';
+import { JoinRoomRequest, JoinedNewMember, LeavedExistingMember, SentMessage } from '../dtos/chat_dtos';
 import { RateLimited } from '../dtos/socket_dtos';
 import { getDeviceInfo } from '../helpers/device_utils';
 
@@ -18,7 +12,7 @@ type ChatSocketProps = {
   subNewMemberJoined: (res: JoinedNewMember) => void;
   subMemberLeaved: (res: LeavedExistingMember) => void;
   subNewMessage: (res: SentMessage) => void;
-  handleDisconnect?: () => void;
+  handleDisconnect: () => void;
 };
 
 type ChatSocketType = {
@@ -28,11 +22,11 @@ type ChatSocketType = {
 
 export function useChatSocket(props: ChatSocketProps): ChatSocketType {
   const { handleDisconnect, roomId, subMemberLeaved, subNewMemberJoined, subNewMessage } = props;
-  const [socket, setSocket] = useState<Socket | null>(null);
+  const socket = useRef<Socket | null>(null);
   const [nickName, setNickName] = useState<string>('');
 
-  const initAsync = async (): Promise<void> => {
-    if (socket) {
+  const initAsync = useCallback(async (): Promise<void> => {
+    if (socket.current) {
       return;
     }
 
@@ -58,50 +52,30 @@ export function useChatSocket(props: ChatSocketProps): ChatSocketType {
     chatSocket.on(ChatSubDestination.LEAVED_EXISTING_MEMBER, subMemberLeaved);
     chatSocket.on(ChatSubDestination.NEW_MESSAGE, subNewMessage);
     chatSocket.on(ChatSubDestination.RATE_LIMITED, (res: RateLimited) => {
-      Alert.alert('Too many requests', `Please try again later after ${res.retryRemainingMs * 1000}s`, [
+      Alert.alert('Too many requests', `Please try again later after ${res.retryRemainingMs / 1000}s`, [
         { text: 'OK' },
       ]);
     });
 
-    setSocket(chatSocket);
-  };
+    socket.current = chatSocket;
+  }, []);
 
-  const leaveAsync = async (): Promise<void> => {
-    const deviceInfo = await getDeviceInfo();
-    if (!deviceInfo || !socket) {
-      return;
+  const leave = useCallback((): void => {
+    if (handleDisconnect) {
+      handleDisconnect();
     }
-
-    try {
-      socket.emit(ChatPubDestination.LEAVE_ROOM, {
-        roomId,
-        deviceType: deviceInfo.deviceType,
-        deviceId: deviceInfo.deviceId,
-        nickName,
-      } as LeaveRoomRequest);
-
-      if (handleDisconnect) {
-        handleDisconnect();
-      }
-
-      socket.off(ChatSubDestination.GET_PROFILE, setNickName);
-      socket.off(ChatSubDestination.JOINED_NEW_MEMBER, subNewMemberJoined);
-      socket.off(ChatSubDestination.LEAVED_EXISTING_MEMBER, subMemberLeaved);
-      socket.off(ChatSubDestination.NEW_MESSAGE, subNewMessage);
-    } finally {
-      socket.disconnect();
-      setNickName('');
-      setSocket(null);
-    }
-  };
+    socket.current?.disconnect();
+    setNickName('');
+    socket.current = null;
+  }, [socket.current]);
 
   useEffect(() => {
     initAsync();
 
     return () => {
-      leaveAsync();
+      leave();
     };
   }, []);
 
-  return { chatSocket: socket, nickName };
+  return { chatSocket: socket.current, nickName };
 }

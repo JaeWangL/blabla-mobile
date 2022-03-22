@@ -21,7 +21,7 @@ type ScreenNavigationProps = CompositeNavigationProp<
   StackNavigationProp<ArchivesParamsList>
 >;
 
-type ScreenRouteProps = RouteProp<ArchivesParamsList, ScreenTypes.ARCHIVES_POST_DETAIL>;
+type ScreenRouteProps = RouteProp<ArchivesParamsList, ScreenTypes.SHARED_POST_DETAIL>;
 
 function PostDetailScreen(): JSX.Element {
   const route = useRoute<ScreenRouteProps>();
@@ -35,7 +35,7 @@ function PostDetailScreen(): JSX.Element {
   } = useQuery(`${queryKeys.postsByDistance}_${post.id}`, () => getPostById(post.id));
 
   const onGoToChatPress = useCallback((): void => {
-    navigation.navigate(ScreenTypes.ARCHIVES_POST_CHAT, { post });
+    navigation.navigate(ScreenTypes.SHARED_POST_CHAT, { post });
   }, []);
 
   if (isLoading || !postData) {
