@@ -1,7 +1,8 @@
-import { memo, useCallback, useMemo } from 'react';
+import { memo, useCallback, useEffect, useMemo } from 'react';
 import IsEqual from 'react-fast-compare';
 import { Text } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
+import { View } from 'react-native-ui-lib';
 import { useQuery } from 'react-query';
 import { useRecoilValue } from 'recoil';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
@@ -37,7 +38,12 @@ function HomeScreen(): JSX.Element {
     isLoading,
     error,
     data: postsData,
+    refetch,
   } = useQuery(queryKeys.postsByDistance, () => getPostsByDistance(locations.latitude, locations.longitude));
+
+  useEffect(() => {
+    refetch();
+  }, [locations]);
 
   const curruentRegion = useMemo(
     () => getCurrentRegion(locations.latitude, locations.longitude),
@@ -52,13 +58,13 @@ function HomeScreen(): JSX.Element {
   }, []);
 
   const onPostMarkerPress = useCallback((item: PostPreviewDTO): void => {
-    navigation.navigate(ScreenTypes.HOME_POST_DETAIL, {
+    navigation.navigate(ScreenTypes.SHARED_POST_DETAIL, {
       post: item,
     });
   }, []);
 
   const onFABPress = useCallback((): void => {
-    navigation.navigate(ScreenTypes.HOME_POST_WRITE);
+    navigation.navigate(ScreenTypes.SHARED_POST_WRITE);
   }, []);
 
   if (isLoading) {
@@ -68,7 +74,7 @@ function HomeScreen(): JSX.Element {
     return <Text>Error!!</Text>;
   }
   return (
-    <>
+    <View style={styles.wrapper}>
       <MapView
         style={styles.mapWrapper}
         provider="google"
@@ -89,7 +95,7 @@ function HomeScreen(): JSX.Element {
         ))}
       </MapView>
       <FloatingButton onPress={onFABPress} />
-    </>
+    </View>
   );
 }
 
