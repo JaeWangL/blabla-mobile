@@ -1,4 +1,4 @@
-import { memo, useCallback } from 'react';
+import { memo, useCallback, useEffect } from 'react';
 import IsEqual from 'react-fast-compare';
 import { FlatList, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -8,6 +8,7 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation, CompositeNavigationProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import CustomHeader from '@/components/customHeader';
+import EmptyScreen from '@/components/emptyScreen';
 import FloatingButton from '@/components/floatingButton';
 import { ArchivesParamsList, PermissionedParamsList, ScreenTypes } from '@/configs/screen_types';
 import { queryKeys } from '@/configs/api_keys';
@@ -28,7 +29,12 @@ function ArchivesScreen(): JSX.Element {
     isLoading,
     error,
     data: postsData,
+    refetch,
   } = useQuery(queryKeys.postsByDistance, () => getPostsByDistance(locations.latitude, locations.longitude));
+
+  useEffect(() => {
+    refetch();
+  }, [locations]);
 
   const onFABPress = useCallback((): void => {
     navigation.navigate(ScreenTypes.SHARED_POST_WRITE);
@@ -53,7 +59,12 @@ function ArchivesScreen(): JSX.Element {
   return (
     <SafeAreaView style={styles.wrapper}>
       <CustomHeader title="Archives" />
-      <FlatList data={postsData} renderItem={renderItem} keyExtractor={(item) => item.id} />
+      <FlatList
+        data={postsData}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id}
+        ListEmptyComponent={EmptyScreen}
+      />
       <FloatingButton onPress={onFABPress} />
     </SafeAreaView>
   );

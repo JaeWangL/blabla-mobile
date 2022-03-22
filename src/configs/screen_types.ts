@@ -14,7 +14,9 @@ export enum ScreenTypes {
   STACK_HOME = 'StackHome',
   HOME = 'Home',
 
+  STACK_SETTINGS = 'StackSettings',
   SETTINGS = 'Settings',
+  INFO_DEVELOPERS = 'InfoDevelopers',
 
   // Shared by tabs
   SHARED_POST_DETAIL = 'SharedPostDetail',
@@ -29,7 +31,7 @@ export type UnPermissionedParamsList = {
 export type PermissionedParamsList = {
   [ScreenTypes.STACK_ARCHIVES]: undefined;
   [ScreenTypes.STACK_HOME]: undefined;
-  [ScreenTypes.SETTINGS]: undefined;
+  [ScreenTypes.STACK_SETTINGS]: undefined;
 };
 
 export type ArchivesParamsList = {
@@ -44,6 +46,11 @@ export type HomeParamsList = {
   [ScreenTypes.SHARED_POST_DETAIL]: { post: PostPreviewDTO };
   [ScreenTypes.SHARED_POST_WRITE]: undefined;
   [ScreenTypes.SHARED_POST_CHAT]: { post: PostPreviewDTO };
+};
+
+export type SettingsParamsList = {
+  [ScreenTypes.SETTINGS]: undefined;
+  [ScreenTypes.INFO_DEVELOPERS]: undefined;
 };
 
 export type RootStackParamList = {
