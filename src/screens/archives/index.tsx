@@ -31,7 +31,7 @@ function ArchivesScreen(): JSX.Element {
   } = useQuery(queryKeys.postsByDistance, () => getPostsByDistance(locations.latitude, locations.longitude));
 
   const onFABPress = useCallback((): void => {
-    navigation.navigate(ScreenTypes.ARCHIVES_POST_WRITE);
+    navigation.navigate(ScreenTypes.SHARED_POST_WRITE);
   }, []);
 
   const renderItem = useCallback(({ item }) => <ArchiveItem item={item} />, []);
