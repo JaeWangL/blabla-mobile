@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Alert } from 'react-native';
 import io, { Socket } from 'socket.io-client';
 import { apiKeys } from '../configs/api_keys';
 import { ChatPubDestination, ChatSubDestination } from '../configs/socket_keys';
@@ -9,6 +10,7 @@ import {
   LeavedExistingMember,
   SentMessage,
 } from '../dtos/chat_dtos';
+import { RateLimited } from '../dtos/socket_dtos';
 import { getDeviceInfo } from '../helpers/device_utils';
 
 type ChatSocketProps = {
@@ -55,6 +57,11 @@ export function useChatSocket(props: ChatSocketProps): ChatSocketType {
     chatSocket.on(ChatSubDestination.JOINED_NEW_MEMBER, subNewMemberJoined);
     chatSocket.on(ChatSubDestination.LEAVED_EXISTING_MEMBER, subMemberLeaved);
     chatSocket.on(ChatSubDestination.NEW_MESSAGE, subNewMessage);
+    chatSocket.on(ChatSubDestination.RATE_LIMITED, (res: RateLimited) => {
+      Alert.alert('Too many requests', `Please try again later after ${res.retryRemainingMs * 1000}s`, [
+        { text: 'OK' },
+      ]);
+    });
 
     setSocket(chatSocket);
   };
