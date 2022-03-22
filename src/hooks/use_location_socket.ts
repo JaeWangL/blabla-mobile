@@ -24,10 +24,8 @@ export function useLocationSocket(): Client | null {
     setLocation({ latitude: loc.coords.latitude, longitude: loc.coords.longitude });
 
     if (!socket.connected) {
-      console.log('Fuck!!');
       return;
     }
-    console.log('Yes!!');
     socket.publish({
       destination: LocationSocketDestination.UPDATE_LOCATION,
       body: JSON.stringify({
