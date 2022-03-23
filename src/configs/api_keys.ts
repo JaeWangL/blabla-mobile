@@ -1,10 +1,10 @@
 export const apiKeys = {
-  chatDomain: 'http://10.89.3.16:8087/',
-  locationsDomain: 'http://10.89.3.16:8085/',
-  locationsStomp: 'ws://10.89.3.16:8085/locations-stomp',
-  locationsSockJS: 'http://10.89.3.16:8085/locations-stomp',
-  postsDomain: 'http://10.89.3.16:8084/posts/',
-  uploadDomain: 'http://10.89.3.16:8885/',
+  chatDomain: 'https://blablachat.azurewebsites.net/',
+  locationsDomain: 'https://blablalocations.azurewebsites.net/',
+  locationsStomp: 'wss://blablalocations.azurewebsites.net/locations-stomp',
+  locationsSockJS: 'https://blablalocations.azurewebsites.net/locations-stomp',
+  postsDomain: 'https://blablaposts.azurewebsites.net/posts/',
+  uploadDomain: 'https://blablaupload.azurewebsites.net/',
 };
 
 export const queryKeys = {

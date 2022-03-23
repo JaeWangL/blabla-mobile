@@ -60,7 +60,7 @@ function PostWrite(): JSX.Element {
       if (uploadResponse) {
         setThumbnail({ thumbnailUrl: uploadResponse.thumbnailUrl, originalFileName: uploadResponse.origianlFileName });
       } else {
-        Alert.alert('Upload Error', 'Maximum file size is exceeded.', [{ text: 'OK' }]);
+        Alert.alert('Upload Error', 'Maximum file size is exceeded. (5MB)', [{ text: 'OK' }]);
       }
     } catch (e) {
       Alert.alert('Upload Error', 'Error occured when uploading image. Try again later please.', [{ text: 'OK' }]);

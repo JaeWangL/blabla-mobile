@@ -1,7 +1,7 @@
 import DayJS from 'dayjs';
 import { memo, useCallback } from 'react';
 import IsEqual from 'react-fast-compare';
-import { Image, Text, TouchableOpacity, View } from 'react-native';
+import { AnimatedImage, Text, TouchableOpacity, View } from 'react-native-ui-lib';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { useNavigation, CompositeNavigationProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -32,7 +32,7 @@ function ArchiveItem(props: ArchiveItemProps): JSX.Element {
     <TouchableOpacity onPress={onPress}>
       <View style={styles.wrapper}>
         <View style={styles.container}>
-          <Image
+          <AnimatedImage
             source={{
               uri: item.thumbnailUrl,
             }}

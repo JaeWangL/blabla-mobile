@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from 'react';
 import IsEqual from 'react-fast-compare';
-import { KeyboardAvoidingView, NativeModules, Platform, ScrollView } from 'react-native';
+import { Dimensions, KeyboardAvoidingView, NativeModules, Platform, ScrollView } from 'react-native';
 import { styles } from './styles';
 
 type KeyboardAwareScrollViewProps = {
@@ -20,6 +20,8 @@ function KeyboardAwareScrollView(props: KeyboardAwareScrollViewProps): JSX.Eleme
       StatusBarManager.getHeight((statusBarFrameData) => {
         setVerticalOffset(statusBarFrameData.height);
       });
+    } else {
+      setVerticalOffset(-Dimensions.get('window').height);
     }
   }, []);
 
