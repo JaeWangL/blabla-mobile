@@ -40,6 +40,7 @@ export function PermissionedNavigator(): JSX.Element {
           tabBarActiveTintColor: defaultTheme.tabActive,
           tabBarInactiveTintColor: defaultTheme.tabInactive,
           tabBarIcon: ({ focused }) => renderTabArchivesIcon(focused, 28),
+          tabBarHideOnKeyboard: true,
         }}
       />
       <Tab.Screen
@@ -50,6 +51,7 @@ export function PermissionedNavigator(): JSX.Element {
           tabBarActiveTintColor: defaultTheme.tabActive,
           tabBarInactiveTintColor: defaultTheme.tabInactive,
           tabBarIcon: ({ focused }) => renderTabHomeIcon(focused, 28),
+          tabBarHideOnKeyboard: true,
         }}
       />
       <Tab.Screen

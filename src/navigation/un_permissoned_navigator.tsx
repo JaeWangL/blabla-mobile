@@ -6,7 +6,7 @@ const Main = createStackNavigator<UnPermissionedParamsList>();
 
 export function UnPermissionedNavigator(): JSX.Element {
   return (
-    <Main.Navigator>
+    <Main.Navigator screenOptions={{ headerShown: false }}>
       <Main.Screen name={ScreenTypes.ON_BOARDING} component={OnBoardingScreen} />
     </Main.Navigator>
   );

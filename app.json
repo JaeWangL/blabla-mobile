@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "blablamobile",
-    "slug": "blablamobile",
+    "name": "BlaBla",
+    "slug": "BlaBla",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -41,6 +41,9 @@
         "NSPhotoLibraryUsageDescription": "The app accesses your photos to let you share them with your friends.",
         "NSCameraUsageDescription": "Allow $(PRODUCT_NAME) to access your camera",
         "NSMicrophoneUsageDescription": "Allow $(PRODUCT_NAME) to access your microphone"
+      },
+      "config": {
+        "googleMapsApiKey": "AIzaSyCAVnFWJrSnur-DoHtp0uRIux8Iv3kBSaM"
       }
     },
     "android": {
@@ -58,7 +61,13 @@
         "android.permission.WRITE_EXTERNAL_STORAGE",
         "android.permission.RECORD_AUDIO"
       ],
-      "package": "com.hahahoho.blabla"
+      "package": "com.hahahoho.blabla",
+      "versionCode": 1,
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyCAVnFWJrSnur-DoHtp0uRIux8Iv3kBSaM"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
