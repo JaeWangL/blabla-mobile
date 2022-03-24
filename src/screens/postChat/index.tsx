@@ -12,6 +12,7 @@ import { ArchivesParamsList, ScreenTypes } from '@/configs/screen_types';
 import { ChatPubDestination } from '@/configs/socket_keys';
 import { JoinedNewMember, LeavedExistingMember, SendMessageRequest, SentMessage } from '@/dtos/chat_dtos';
 import { useChatSocket } from '@/hooks/use_chat_socket';
+import { translate } from '@/i18n';
 import ChatBalloon from './chatBalloon';
 import { MessageState } from './interfaces';
 import { styles } from './styles';
@@ -114,7 +115,7 @@ function PostChatScreen(): JSX.Element {
             fieldStyle={styles.inputfieldContainer}
             value={text}
             onChangeText={setText}
-            placeholder="메세지를 입력해 주세요 ..."
+            placeholder={translate('placeholder.chatInput')}
             multiline
             trailingAccessory={
               <Button style={styles.buttonSend} iconSource={IcSend} onPress={onSendClick} avoidInnerPadding />

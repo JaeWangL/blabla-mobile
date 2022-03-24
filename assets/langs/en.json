@@ -1,0 +1,37 @@
+{
+  "common": {
+    "cancel": "Cancel",
+    "noData": "There are no data to dispaly",
+    "ok": "OK"
+  },
+  "button": {
+    "acceptPermissionLocation": "Start Journey"
+  },
+  "dialogs": {
+    "newPostTitle": "New post alert",
+    "permissionDeniedTitle": "Permission Denied",
+    "permissionRequestLocation": "You have to accept location permissions",
+    "permissionRequestPhotos": "Please accept photos permissions",
+    "postCreatingFailed": "Error is occured when writing post. Please try again later",
+    "postCreatingFailedTitle": "Creation Failed",
+    "postCreatingSucceed": "New post is created",
+    "postCreatingSucceedTitle": "Post Created",
+    "rateLimitedTitle": "Too many requests",
+    "rateLimitedDesc": "Please try again later after {{retryRemainingS}}s",
+    "uploadErrorTitle": "Upload Error",
+    "uploadErrorExceed": "Maximum thumbnail size up to 5MB",
+    "uploadErrorUnk": "Error is caused. Please try again later"
+  },
+  "placeholder": {
+    "chatInput": "Please input messages ..."
+  },
+  "archives": {
+    "title": "Archives"
+  },
+  "settings": {
+    "groupInfo": "App Information",
+    "infoDeveloper": "Developer Information",
+    "infoVersion": "App Version",
+    "title": "Settings"
+  }
+}

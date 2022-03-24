@@ -12,6 +12,7 @@ import EmptyScreen from '@/components/emptyScreen';
 import FloatingButton from '@/components/floatingButton';
 import { ArchivesParamsList, PermissionedParamsList, ScreenTypes } from '@/configs/screen_types';
 import { queryKeys } from '@/configs/api_keys';
+import { translate } from '@/i18n';
 import { getPostsByDistance } from '@/services/posts_service';
 import { locationAtom } from '@/recoils/location_states';
 import ArchiveItem from './archiveItem';
@@ -58,13 +59,12 @@ function ArchivesScreen(): JSX.Element {
   }
   return (
     <SafeAreaView style={styles.wrapper}>
-      <CustomHeader title="Archives" />
-      <FlatList
-        data={postsData}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        ListEmptyComponent={EmptyScreen}
-      />
+      <CustomHeader title={translate('archives.title')} />
+      {postsData.length < 1 ? (
+        <EmptyScreen />
+      ) : (
+        <FlatList data={postsData} renderItem={renderItem} keyExtractor={(item) => item.id} />
+      )}
       <FloatingButton onPress={onFABPress} />
     </SafeAreaView>
   );

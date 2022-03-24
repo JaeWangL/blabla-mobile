@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native';
-import { defaultTheme } from '@/themes';
+import { colors, defaultTheme } from '@/themes';
 
 export const styles = StyleSheet.create({
   wrapper: {
@@ -15,6 +15,14 @@ export const styles = StyleSheet.create({
     width: 200,
     height: 200,
     backgroundColor: 'transparent',
+  },
+  label: {
+    marginTop: -40,
+    fontSize: 14,
+    fontFamily: 'PretendardRegular',
+    color: colors.gray400,
+    lineHeight: 20,
+    textAlign: 'center',
   },
   button: {
     marginHorizontal: 20,

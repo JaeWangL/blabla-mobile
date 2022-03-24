@@ -8,7 +8,7 @@ import { styles } from './styles';
 function InfoDevelopers(): JSX.Element {
   return (
     <SafeAreaView style={styles.wrapper}>
-      <CustomAppBar title="설정으로 가기" goBack />
+      <CustomAppBar title="개발자 정보" goBack />
       <View style={styles.textWrapper}>
         <Text style={styles.text}>
           {`
