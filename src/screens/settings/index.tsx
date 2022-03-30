@@ -8,6 +8,7 @@ import { useNavigation, CompositeNavigationProp } from '@react-navigation/native
 import { StackNavigationProp } from '@react-navigation/stack';
 import CustomHeader from '@/components/customHeader';
 import { PermissionedParamsList, ScreenTypes, SettingsParamsList } from '@/configs/screen_types';
+import { translate } from '@/i18n';
 import { styles } from './styles';
 
 type ScreenNavigationProps = CompositeNavigationProp<
@@ -24,14 +25,14 @@ function SettingsScreen(): JSX.Element {
 
   return (
     <SafeAreaView style={styles.wrapper}>
-      <CustomHeader title="Settings" />
-      <Text style={[styles.deafultSpacing, styles.groupLabel]}>앱 정보</Text>
+      <CustomHeader title={translate('settings.title')} />
+      <Text style={[styles.deafultSpacing, styles.groupLabel]}>{translate('settings.groupInfo')}</Text>
       <View style={[styles.deafultSpacing, styles.flexRow]}>
-        <Text style={[styles.textLabel]}>앱 버전 확인</Text>
+        <Text style={[styles.textLabel]}>{translate('settings.infoVersion')}</Text>
         <Text style={[styles.groupLabel]}>{Constants.manifest?.version}</Text>
       </View>
       <TouchableOpacity onPress={onDevelopersPress}>
-        <Text style={[styles.deafultSpacing, styles.textLabel]}>개발자 정보</Text>
+        <Text style={[styles.deafultSpacing, styles.textLabel]}>{translate('settings.infoDeveloper')}</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

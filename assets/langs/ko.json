@@ -1,0 +1,37 @@
+{
+  "common": {
+    "cancel": "취소",
+    "noData": "표시할 데이터가 없습니다.",
+    "ok": "확인"
+  },
+  "button": {
+    "acceptPermissionLocation": "동의하고 시작하기"
+  },
+  "dialogs": {
+    "newPostTitle": "새로운 포스트 알림",
+    "permissionDeniedTitle": "권한 에러",
+    "permissionRequestLocation": "앱의 원활한 사용을 위해 위치정보 권한을 허용해 주세요.",
+    "permissionRequestPhotos": "앱의 원활한 사용을 위해 사진 권한을 허용해 주세요.",
+    "postCreatingFailed": "포스트를 작성하던 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.",
+    "postCreatingFailedTitle": "등록 에러",
+    "postCreatingSucceed": "새로운 포스트가 등록되었습니다.",
+    "postCreatingSucceedTitle": "등록 완료",
+    "rateLimitedTitle": "연속클릭 알림",
+    "rateLimitedDesc": "{{retryRemainingS}}초 후 다시 시도해 주세요.",
+    "uploadErrorTitle": "업로드 오류",
+    "uploadErrorExceed": "썸네일은 최대 5MB 까지 업로드 할 수 있습니다.",
+    "uploadErrorUnk": "파일을 업로드 하던 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요."
+  },
+  "placeholder": {
+    "chatInput": "메세지를 입력해 주세요 ..."
+  },
+  "archives": {
+    "title": "모아보기"
+  },
+  "settings": {
+    "groupInfo": "앱 정보",
+    "infoDeveloper": "개발자 정보",
+    "infoVersion": "앱 버전",
+    "title": "설정"
+  }
+}

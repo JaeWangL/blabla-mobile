@@ -8,6 +8,7 @@ import { Client } from '@stomp/stompjs';
 import { apiKeys } from '@/configs/api_keys';
 import { LocationSocketDestination } from '@/configs/socket_keys';
 import { getDeviceInfo } from '@/helpers/device_utils';
+import { translate } from '@/i18n';
 import { locationAtom } from '@/recoils/location_states';
 
 export function useLocationSocket(): Client | null {
@@ -58,7 +59,7 @@ export function useLocationSocket(): Client | null {
         locationSocket.subscribe(LocationSocketDestination.CREATED_NEW_POST, ({ body }: { body: string }) => {
           Toast.show({
             type: 'success',
-            text1: 'New post alert',
+            text1: translate('dialogs.newPostTitle'),
             text2: body,
           });
         });

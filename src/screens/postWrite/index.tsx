@@ -19,6 +19,7 @@ import { locationAtom } from '@/recoils/location_states';
 import { createPost } from '@/services/posts_service';
 import { uploadThumbnail } from '@/services/upload_service';
 import { getDeviceInfo } from '@/helpers/device_utils';
+import { translate } from '@/i18n';
 import { defaultTheme } from '@/themes';
 import { initThumbnail, Thumbnail } from './interfaces';
 import { styles } from './styles';
@@ -60,10 +61,16 @@ function PostWrite(): JSX.Element {
       if (uploadResponse) {
         setThumbnail({ thumbnailUrl: uploadResponse.thumbnailUrl, originalFileName: uploadResponse.origianlFileName });
       } else {
-        Alert.alert('Upload Error', 'Maximum file size is exceeded. (5MB)', [{ text: 'OK' }]);
+        Alert.alert(translate('dialogs.uploadErrorTitle'), translate('dialogs.uploadErrorExceed'), [
+          { text: translate('common.ok') },
+        ]);
       }
     } catch (e) {
-      Alert.alert('Upload Error', 'Error occured when uploading image. Try again later please.', [{ text: 'OK' }]);
+      Alert.alert(
+        translate('dialogs.uploadErrorTitle'),
+        'Error occured when uploading image. Try again later please.',
+        [{ text: translate('common.ok') }],
+      );
     } finally {
       setPercentage(0);
     }
@@ -72,7 +79,9 @@ function PostWrite(): JSX.Element {
   const onThumbnailPress = useCallback(async (): Promise<void> => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (status !== 'granted') {
-      Alert.alert('Permission Denied', 'You have to accept photos permissions.', [{ text: 'OK' }]);
+      Alert.alert(translate('dialogs.permissionDeniedTitle'), translate('dialogs.permissionRequestPhotos'), [
+        { text: translate('common.ok') },
+      ]);
       return;
     }
 
@@ -109,13 +118,13 @@ function PostWrite(): JSX.Element {
         };
         const res = await createPost(req);
         if (res) {
-          Alert.alert('Post Created', 'New post are created successfully');
+          Alert.alert(translate('dialogs.postCreatingSucceedTitle'), translate('dialogs.postCreatingSucceed'));
           navigation.goBack();
         } else {
-          Alert.alert('Creation Failed', 'Error is occured when writing post. Please try again later.');
+          Alert.alert(translate('dialogs.postCreatingFailedTitle'), translate('dialogs.postCreatingFailed'));
         }
       } catch (e) {
-        Alert.alert('Creation Failed', 'Error is occured when writing post. Please try again later.');
+        Alert.alert(translate('dialogs.postCreatingFailedTitle'), translate('dialogs.postCreatingFailed'));
       } finally {
         setLoading(false);
       }
@@ -130,61 +139,65 @@ function PostWrite(): JSX.Element {
 
   return (
     <SafeAreaView style={styles.wrapper}>
-      <CustomAppBar title="나의 소식 전하기" goBack accessoryRight={renderRightBarItem()} />
-      <View style={styles.contentContainer}>
-        <TouchableOpacity onPress={onThumbnailPress}>
-          <View style={styles.thumbnailContainer}>
-            {thumbnail.thumbnailUrl ? (
-              <View>
-                <AnimatedImage
-                  style={[styles.thumbnail, styles.withBorderRadius]}
-                  source={{ uri: thumbnail.thumbnailUrl }}
-                />
-                <Badge
-                  backgroundColor={defaultTheme.primary}
-                  style={styles.thumbnailRemoveBadge}
-                  icon={IcClose}
-                  iconStyle={styles.thumbnailCloseIcon}
-                  size={20}
-                />
+      <KeyboardAwareScrollView useScroll>
+        <>
+          <CustomAppBar title="나의 소식 전하기" goBack accessoryRight={renderRightBarItem()} />
+          <View style={styles.contentContainer}>
+            <TouchableOpacity onPress={onThumbnailPress}>
+              <View style={styles.thumbnailContainer}>
+                {thumbnail.thumbnailUrl ? (
+                  <View>
+                    <AnimatedImage
+                      style={[styles.thumbnail, styles.withBorderRadius]}
+                      source={{ uri: thumbnail.thumbnailUrl }}
+                    />
+                    <Badge
+                      backgroundColor={defaultTheme.primary}
+                      style={styles.thumbnailRemoveBadge}
+                      icon={IcClose}
+                      iconStyle={styles.thumbnailCloseIcon}
+                      size={20}
+                    />
+                  </View>
+                ) : (
+                  <Image style={styles.thumbnail} source={ThumbnailPlaceholder} />
+                )}
+                {uploadPercentage !== 0 ? <ActivityIndicator style={styles.thumbnailLoader} /> : null}
               </View>
-            ) : (
-              <Image style={styles.thumbnail} source={ThumbnailPlaceholder} />
-            )}
-            {uploadPercentage !== 0 ? <ActivityIndicator style={styles.thumbnailLoader} /> : null}
-          </View>
-        </TouchableOpacity>
-        <Divider />
-        <TextField
-          containerStyle={styles.inputContainer}
-          placeholderTextColor={defaultTheme.descDefault}
-          placeholder="제목을 입력해 주세요."
-          enableErrors
-          validate={['required']}
-          validationMessage={['Field is required', 'Email is invalid', 'Password is too short']}
-          value={title}
-          onChangeText={setTitle}
-        />
-        <Divider />
-        <TextField
-          containerStyle={styles.inputContainer}
-          placeholderTextColor={defaultTheme.descDefault}
-          placeholder="내용을 입력해 주세요."
-          multiline
-          enableErrors
-          validate={['required']}
-          validationMessage={['Field is required']}
-          value={contents}
-          onChangeText={setContents}
-        />
-        <Text style={styles.caption}>
-          {`
+            </TouchableOpacity>
+            <Divider />
+            <TextField
+              containerStyle={styles.inputContainer}
+              placeholderTextColor={defaultTheme.descDefault}
+              placeholder="제목을 입력해 주세요."
+              enableErrors
+              validate={['required']}
+              validationMessage={['Field is required', 'Email is invalid', 'Password is too short']}
+              value={title}
+              onChangeText={setTitle}
+            />
+            <Divider />
+            <TextField
+              containerStyle={styles.inputContainer}
+              placeholderTextColor={defaultTheme.descDefault}
+              placeholder="내용을 입력해 주세요."
+              multiline
+              enableErrors
+              validate={['required']}
+              validationMessage={['Field is required']}
+              value={contents}
+              onChangeText={setContents}
+            />
+            <Text style={styles.caption}>
+              {`
 휴대폰의 위치 기반으로 소식이 전해지며,
 게시글은 작성일로부터 24시간 후에 자동으로 삭제됩니다.
           
 개인정보가 노출되지 않도록 주의 바랍니다.`}
-        </Text>
-      </View>
+            </Text>
+          </View>
+        </>
+      </KeyboardAwareScrollView>
     </SafeAreaView>
   );
 }
